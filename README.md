@@ -48,3 +48,7 @@ Fibrosis: F0~4, F1~7, F2~9.5, F3~13, F4~26 kPa
 - Hepatocyte parameters are calibrated against real data; the other cell lines
   use literature-anchored starting points (laminAC is inferred from area and
   validated against qPCR)
+
+## Diagram
+
+![Study diagram](Diagram/Diagram_mvirtual_cell.png)
