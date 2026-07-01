@@ -40,7 +40,7 @@ fibrosis_prediction(hep)                # F0->F4 prediction
 
 - **Two populations:** basal 37.9 µm² (CV 6%, constant) + mechanosensitive ~68.8 µm² (grows).
 
-- **Viscoelasticity** τ = 35.3 ± 2.6 h · inferred lamin vs LMNA qPCR: r=0.84.
+- **Viscoelasticity:** τ = 35.3 ± 2.6 h · inferred lamin vs LMNA qPCR: r=0.84.
 
 - **Fibrosis stages:** F0~4, F1~7, F2~9.5, F3~13, F4~26 kPa.
 
