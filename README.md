@@ -42,7 +42,7 @@ fibrosis_prediction(hep)                # F0->F4 prediction
 
 - **Viscoelasticity:** τ = 35.3 ± 2.6 h · inferred lamin vs LMNA qPCR: r=0.84.
 
-- **Fibrosis stages:** F0~4, F1~7, F2~9.5, F3~13, F4~26 kPa.
+- **Fibrosis stages:** F0 ~1-4, F1 ~7, F2 ~9.5, F3 ~13, F4 ~26 kPa.
 
 ## Notes
 
