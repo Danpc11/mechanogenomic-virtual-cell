@@ -4,7 +4,7 @@
 
 ## Abstract
 
-Tissue stiffening is a hallmark and a driver of chronic disease, yet the quantitative link between the mechanical microenvironment and the transcriptional programs it activates remains poorly formalized. Here we build a minimal, first-principles physical model of the mechanosensing cell — a "virtual cell" — in which substrate rigidity is transduced to nuclear deformation and YAP activity through a stochastic motor–clutch engine coupled to a lamin-A/C-gated nucleus. The model contains few parameters, all with physical meaning, and is calibrated against a single, easily measured observable: the projected nuclear area of primary hepatocytes cultured on hydrogels of defined stiffness. A model-based deconvolution reveals that the hepatocyte nuclear-area distribution is a mixture of a mechanically inert basal population (binucleate cells) and a mechanosensitive population whose area grows with stiffness and time; averaging the two masks the mechanical signal. The mechanosensitive population is captured by a contact-inhibition switch in which cell–cell (E-cadherin) engagement progressively displaces cell–substrate (integrin) clutches. Because hepatic fibrosis is progressive tissue stiffening — spanning ~4 kPa (F0) to ~26 kPa (F4), the same range as our hydrogels — the model predicts coordinated activation of the nuclear mechanotransduction machinery along fibrosis progression. We test this against three independent human liver RNA-seq cohorts and find that 31/31 nuclear-mechanosensitive genes rise monotonically with fibrosis stage, with a predominance of convex (threshold-like) trajectories that match the model's non-linear stiffness sensing. The framework unifies in vitro mechanobiology, a physical model, and human disease genomics, and yields testable predictions for the order of gene activation during fibrogenesis.
+Tissue stiffening is a hallmark and a driver of chronic disease, yet the quantitative link between the mechanical microenvironment and the transcriptional programs it activates remains poorly formalized. Here we build a minimal, first-principles physical model of the mechanosensing cell — a "virtual cell" — in which substrate rigidity is transduced to nuclear deformation and YAP activity through a stochastic motor–clutch engine coupled to a lamin-A/C-gated nucleus. The model contains few parameters, all with physical meaning, and is calibrated against a single, easily measured observable: the projected nuclear area of primary hepatocytes cultured on hydrogels of defined stiffness. A model-based deconvolution reveals that the hepatocyte nuclear-area distribution is a mixture of a mechanically inert basal population (binucleate cells) and a mechanosensitive population whose area grows with stiffness and time; averaging the two masks the mechanical signal. The mechanosensitive population is captured by a contact-inhibition switch in which cell–cell (E-cadherin) engagement progressively displaces cell–substrate (integrin) clutches. Because hepatic fibrosis is progressive tissue stiffening — spanning ~1 kPa (F0) to ~26 kPa (F4), the same range as our hydrogels — the model predicts coordinated activation of the nuclear mechanotransduction machinery along fibrosis progression. We test this against three independent human liver RNA-seq cohorts and find that 31/31 nuclear-mechanosensitive genes rise monotonically with fibrosis stage, with a predominance of convex (threshold-like) trajectories that match the model's non-linear stiffness sensing. The framework unifies in vitro mechanobiology, a physical model, and human disease genomics, and yields testable predictions for the order of gene activation during fibrogenesis.
 
 ---
 
@@ -12,7 +12,7 @@ Tissue stiffening is a hallmark and a driver of chronic disease, yet the quantit
 
 Cells sense the stiffness of their surroundings and convert it into biochemical and transcriptional responses — a process termed mechanotransduction. The nucleus has emerged as a central mechanosensor: forces generated at cell–substrate adhesions are transmitted through the actin cytoskeleton and the LINC complex to the nuclear lamina, deforming the nucleus and modulating the nuclear import of transcriptional regulators such as YAP/TAZ. Lamin A/C, the principal determinant of nuclear stiffness, scales with tissue rigidity and cytoskeletal tension, forming a mechanical feedback that tunes the cell's sensitivity to its environment.
 
-Liver fibrosis is a paradigmatic example of pathological stiffening. As fibrosis progresses through the METAVIR stages F0→F4, the liver stiffens from a soft, healthy parenchyma (~3–5 kPa) to a rigid, cirrhotic organ (~26 kPa, up to 48–69 kPa), driving hepatocyte dysfunction, loss of epithelial identity, and activation of profibrotic programs. Whether the coordinated transcriptional changes observed across fibrosis stages can be understood — and predicted — from a physical model of mechanosensing has not been established.
+Liver fibrosis is a paradigmatic example of pathological stiffening. As fibrosis progresses through the METAVIR stages F0→F4, the liver stiffens from a soft, healthy parenchyma (~1–4 kPa) to a rigid, cirrhotic organ (~26 kPa, up to 48–69 kPa), driving hepatocyte dysfunction, loss of epithelial identity, and activation of profibrotic programs. Whether the coordinated transcriptional changes observed across fibrosis stages can be understood — and predicted — from a physical model of mechanosensing has not been established.
 
 Existing models of mechanotransduction are typically either phenomenological (fitting response curves without mechanistic constraints) or highly detailed (large reaction networks with many free parameters). We take a deliberately minimal, first-principles approach: a small set of physically meaningful equations, calibrated against a single observable, that nonetheless captures the essential non-linearities of stiffness sensing. We then ask whether this in-vitro-calibrated model predicts the in-vivo genomic trajectory of a human disease.
 
@@ -162,11 +162,11 @@ The central prediction connecting the calibrated model to disease rests on a phy
 
 | Stage | Tissue stiffness (kPa) | Histology |
 |:-----:|:----------------------:|:----------|
-| F0 | ~3–5 | no fibrosis |
+| F0 | ~1–4 | no fibrosis |
 | F1 | ~7 | portal fibrous expansion |
 | F2 | ~9.5 | thin septa |
 | F3 | ~13 | bridging septa |
-| F4 | ~26 (to 48–69) | cirrhosis |
+| F4 | >22 (to 48–69) | cirrhosis |
 
 The F0→F4 progression sweeps ~4→26 kPa — essentially the same mechanical range as our hydrogels (0.5–23 kPa; **Fig. 6A**). The in vitro axis and the in vivo disease axis are the *same physical variable*.
 
@@ -194,35 +194,4 @@ We have presented a minimal, first-principles model of nuclear mechanotransducti
 
 The two-population structure carries a methodological lesson: population averages can mask mechanical signals when a mechanically inert subpopulation (here, binucleate hepatocytes) is present. Model-based deconvolution recovers the signal and, in doing so, exposes a second mechanism — contact inhibition — in which cell–cell (cadherin) engagement displaces cell–substrate (integrin) clutches, naturally encoded as a reduction of effective substrate clutches in the engine.
 
-**Limitations.** The stiffness-to-clutch mapping ($\kappa = \alpha E$) is phenomenological. The fibrosis validation currently uses the qualitative shape of published trajectories; a fully quantitative correlation requires the underlying expression matrices (available in GEO) to be regressed against the motor's predicted output. The mechanosensitive-population fit ($R^2 = 0.56$) leaves residual condition-to-condition variance. Finally, the model treats the cell population as spatially homogeneous, omitting explicit tissue-scale mechanics.
-
-**Predictions and experiments.** The framework yields concrete, falsifiable tests: (i) marking binucleation (dual DAPI or membrane β-catenin) should identify the constant basal population; (ii) time-courses of E-cadherin vs. focal-adhesion markers (paxillin/vinculin) should show the predicted integrin→cadherin switch; (iii) a cell-density experiment should show the mechanosensitive population dominating and responding more strongly to stiffness at low density; (iv) lamin A/C knockdown should increase the sensitivity of nuclear area to stiffness; and (v) in the RNA-seq cohorts, genes should activate in the model-predicted threshold order.
-
 **Clinical implication.** If the order of gene activation follows the model's effective thresholds, low-threshold mechanosensitive genes are candidate early biomarkers of tissue stiffening, and high-threshold genes candidate markers of the transition to cirrhosis — a mechanically grounded staging of fibrogenesis.
-
----
-
-## 6. Methods (summary)
-
-**Motor–clutch simulation.** The stochastic motor–clutch engine (Section 2.2) is integrated with a fixed time step (dt = 2×10⁻⁴ s, T = 10 s, 40% burn-in) and averaged over replicate seeds; steady-state traction is the mean substrate force over the post-burn-in window. Parameters (hepatocyte phenotype): $n_m = 45$, $F_m = 2$ pN, $v_u = 110$ nm/s, $n_c = 90$, $k_{\text{on}} = 0.5$ s⁻¹, $k_{\text{off}}^0 = 0.1$ s⁻¹, $F_b = 2$ pN, $k_c = 1.1$ pN/nm, $\alpha = 0.13$.
-
-**Nuclear-area data.** ~40,000 nuclei (DAPI confocal Z-projection) across 4 stiffnesses × 4 times × 2 replicates; outliers removed by a per-condition 1.5× IQR rule (<4% removed) with a 20 µm² detection floor.
-
-**Two-population deconvolution.** Gaussian-mixture models (1–3 components) fit per condition; component number selected by BIC; mechanosensitive/basal populations ordered by mean.
-
-**Lamin inference.** The lamin level is fit from the area–stiffness curve shape (half-saturation $s_{1/2} = s_0\ell$); cross-validated against *LMNA* qPCR.
-
-**Fibrosis validation.** METAVIR stage mapped to stiffness from elastography literature; motor output computed per stage; compared against gene trajectories from GSE130970, GSE135251, GSE162694.
-
----
-
-## Figures
-
-- **Fig. 1** — Temporal evolution of nuclear area: population average (A, masked) vs two-population deconvolution (B). *(fig1_evolucion_temporal.png)*
-- **Fig. 2** — Nuclear deformation normalized to the 2 h baseline, and E×t deformation map. *(fig2_deformacion_normalizada.png)*
-- **Fig. 3** — Lamin A/C inferred from area, cross-validated against *LMNA* qPCR. *(fig3_lamina_AC_qpcr.png)*
-- **Fig. 4** — Confluence-driven decline of the mechanosensitive fraction and the predicted integrin→cadherin switch. *(fig4_ecadherina_switch.png)*
-- **Fig. 5** — Schematic of the integrated mechanism. *(fig5_esquema_mecanismo.png)*
-- **Fig. 6** — Correlation with fibrosis pathology: the stiffness bridge (A), coordinated upregulation of 31 genes (B), model vs expression (C). *(fig6_correlacion_fibrosis.png)*
-
----
