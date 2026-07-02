@@ -8,7 +8,7 @@ Expression Omnibus (GEO):
 - [GSE162694](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE162694)
 
 All datasets are derived from snap-frozen human liver biopsies and span the full fibrosis
-spectrum, including histologically normal controls (N) and fibrosis stages F1–F4. The
+spectrum, including histologically normal controls (F0) and fibrosis stages F1–F4. The
 dominant disease etiology across cohorts is NAFLD/NASH-associated fibrosis.
 
 ---
