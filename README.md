@@ -1,8 +1,7 @@
-<p align="left">
-  <img src="assets/mvc_logo.png" alt="mVirtual Cell logo" width="120"/>
-</p>
-
-# Mechanogenomic virtual-cell model
+<h1>
+  <img src="assets/mvc_logo.png" alt="mVirtual Cell logo" width="70">
+  Mechanogenomic virtual-cell model
+</h1>
 
 [![Python](https://img.shields.io/badge/python-%E2%89%A53.9-3776ab.svg)](https://www.python.org/)
 [![NumPy](https://img.shields.io/badge/NumPy-%E2%89%A51.24-013243.svg)](https://numpy.org/)
