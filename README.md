@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="assets/mvirtual_cell_logo.png" alt="mVirtual Cell logo" width="120"/>
+  <img src="assets/mvc_logo.png" alt="mVirtual Cell logo" width="120"/>
 </p>
 
 # Mechanogenomic virtual-cell model
