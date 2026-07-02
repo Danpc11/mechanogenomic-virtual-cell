@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Mechanogenomic virtual-cell model"
+abstract: >-
+  A minimal, first-principles physical model of nuclear mechanotransduction
+  linking substrate stiffness to nuclear deformation, YAP/TAZ activity, and
+  fibrosis-associated transcriptional trajectories. Calibrated against nuclear
+  area of primary hepatocytes on hydrogels and validated against human liver
+  RNA-seq cohorts across fibrosis stages.
+type: software
+authors:
+  - family-names: "Pérez-Calixto"
+    given-names: "Daniel"
+    affiliation: "Instituto Nacional de Medicina Genómica (INMEGEN)"
+  - family-names: "Vázquez-Victorio"
+    given-names: "Genaro"
+    affiliation: "Facultad de Ciencias, Universidad Nacional Autónoma de México (FC/UNAM)"
+repository-code: "https://github.com/Danpc11/mechanogenomic-virtual-cell-"
+license: MIT
+keywords:
+  - biophysics
+  - mechanobiology
+  - mechanotransduction
+  - cell-nucleus
+  - virtual-cell-models
+  - motor-clutch
+  - hepatic-fibrosis
+  - YAP-TAZ
+version: "0.1.0"
+date-released: "2026-07-01"
