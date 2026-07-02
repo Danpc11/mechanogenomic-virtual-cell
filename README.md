@@ -1,4 +1,4 @@
- Mechanogenomic virtual-cell model
+# Mechanogenomic virtual-cell model
 
 A minimal, first-principles physical model of nuclear mechanotransduction that
 links substrate stiffness to nuclear deformation, YAP/TAZ activity, and
