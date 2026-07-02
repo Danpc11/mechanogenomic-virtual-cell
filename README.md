@@ -44,7 +44,7 @@ fibrosis_prediction(hep)                # F0->F4 prediction
 | `test_virtual_cell.py` | Executable validation suite (10 qualitative checks). |
 | `Theory_draft.md` | Manuscript draft (model, calibration, RNA-seq validation). |
 | `Datasets.md` | Description of the RNA-seq cohorts used for validation. |
-| `Diagram/` | Study diagram. |
+| `assets/` | Diagram and logo. |
 
 ## Model structure (`mvirtual_cell.py`)
 
@@ -113,7 +113,7 @@ fibrosis response, and clutch-vs-motor sensitivity of the optimum.
 
 ## Diagram
 
-![Study diagram](Diagram/Diagram_mvirtual_cell.png)
+![Study diagram](assets/Diagram_mvirtual_cell.png)
 
 ## Citation
 
