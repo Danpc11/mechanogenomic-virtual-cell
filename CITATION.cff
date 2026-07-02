@@ -15,7 +15,7 @@ authors:
   - family-names: "Vázquez-Victorio"
     given-names: "Genaro"
     affiliation: "Facultad de Ciencias, Universidad Nacional Autónoma de México (FC/UNAM)"
-repository-code: "https://github.com/Danpc11/mechanogenomic-virtual-cell-"
+repository-code: "https://github.com/Danpc11/mechanogenomic-virtual-cell"
 license: MIT
 keywords:
   - biophysics
