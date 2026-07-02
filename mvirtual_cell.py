@@ -246,7 +246,9 @@ def population_mixture(E, t, ph: Phenotype, phi=None, reps=6,
 # ============================================================================
 #   METAVIR stage -> tissue stiffness (median SWE/TE elastography values, kPa)
 # ---------------------------------------------------------------------------
-FIBROSIS_STIFFNESS = {"F0": 4.0, "F1": 7.0, "F2": 9.5, "F3": 13.0, "F4": 26.0}
+FIBROSIS_STIFFNESS = {"F0": 2.5, "F1": 7.0, "F2": 9.5, "F3": 13.0, "F4": 26.0}
+#   F0 healthy liver spans ~1-4 kPa; 2.5 kPa (midpoint) used as the single
+#   representative value for the simulation. F4 cirrhosis: ~26 kPa (up to 48-69).
 
 def fibrosis_prediction(ph: Phenotype = None, reps=8):
     """Predict mechanotransduction output across fibrosis stages F0->F4.
