@@ -5,7 +5,7 @@
 [![SciPy](https://img.shields.io/badge/SciPy-%E2%89%A51.10-8caae6.svg)](https://scipy.org/)
 
 <p align="center">
-  <img src="assets/mvirtual-cell-logo.png" alt="mVirtual Cell logo" width="260"/>
+  <img src="assets/mvirtual_cell_logo.png" alt="mVirtual Cell logo" width="260"/>
 </p>
 
 A minimal, first-principles physical model of nuclear mechanotransduction that
