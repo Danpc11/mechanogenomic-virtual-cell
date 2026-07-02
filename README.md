@@ -10,7 +10,7 @@ python mvirtual_cell.py          # runs the self-test / demo
 ```
 
 ```python
-from virtual_cell import (PHENOTYPES, nuclear_stress, nuclear_area_ss,
+from mvirtual_cell import (PHENOTYPES, nuclear_stress, nuclear_area_ss,
                           yap_nc_ratio, nuclear_area_time, population_mixture,
                           fibrosis_prediction, CALIBRATION)
 
