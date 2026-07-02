@@ -1,12 +1,12 @@
+<p align="left">
+  <img src="assets/mvirtual_cell_logo.png" alt="mVirtual Cell logo" width="120"/>
+</p>
+
 # Mechanogenomic virtual-cell model
 
 [![Python](https://img.shields.io/badge/python-%E2%89%A53.9-3776ab.svg)](https://www.python.org/)
 [![NumPy](https://img.shields.io/badge/NumPy-%E2%89%A51.24-013243.svg)](https://numpy.org/)
 [![SciPy](https://img.shields.io/badge/SciPy-%E2%89%A51.10-8caae6.svg)](https://scipy.org/)
-
-<p align="left">
-  <img src="assets/mvirtual_cell_logo.png" alt="mVirtual Cell logo" width="160"/>
-</p>
 
 A minimal, first-principles physical model of nuclear mechanotransduction that
 links substrate stiffness to nuclear deformation, YAP/TAZ activity, and
