@@ -1,3 +1,5 @@
 numpy>=1.24
 scipy>=1.10
-numba>=0.57   # optional but strongly recommended (50-100x speed-up)
+numba>=0.57         # optional but strongly recommended (50-100x speed-up)
+scikit-learn>=1.3   # required by calibration.py (GMM deconvolution)
+pandas>=2.0         # required by calibration.py (CSV I/O)
