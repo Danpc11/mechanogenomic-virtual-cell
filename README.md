@@ -56,3 +56,10 @@ fibrosis_prediction(hep)                # F0->F4 prediction
 ## Diagram
 
 ![Study diagram](Diagram/Diagram_mvirtual_cell.png)
+
+## Documentation
+
+Full documentation is available in the [project Wiki](../../wiki):
+
+- [Motor-Clutch Model](../../wiki/Motor-Clutch-Model)
+- [Nuclear Mechanics Model](../../wiki/Nuclear-Mechanics-Model)
