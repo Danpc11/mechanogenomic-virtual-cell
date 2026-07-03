@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mechanogenomic Virtual Cell - interactive demo</title>
+<style>
+  :root { --bg:#faf9f5; --card:#fff; --ink:#2c2c2a; --muted:#5f5e5a; --line:#d3d1c7;
+          --teal:#0f6e56; --coral:#993c1d; --accent:#534ab7; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.6; }
+  .wrap { max-width:920px; margin:0 auto; padding:2rem 1.25rem 4rem; }
+  h1 { font-weight:500; font-size:24px; margin:0 0 .25rem; }
+  .sub { color:var(--muted); font-size:15px; margin:0 0 1.5rem; }
+  .panel { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; align-items:start; }
+  @media (max-width:720px){ .panel{ grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1.25rem; }
+  svg { width:100%; height:auto; display:block; background:#fcfbf7; border-radius:8px; }
+  .controls label { display:block; font-size:13px; color:var(--muted); margin:1rem 0 .25rem; }
+  .controls .val { color:var(--ink); font-weight:500; }
+  input[type=range]{ width:100%; }
+  .readout { display:grid; grid-template-columns:1fr 1fr; gap:.4rem 1rem; margin-top:1rem; font-size:13px; }
+  .readout div { display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:.25rem 0; }
+  .readout b { font-weight:500; }
+  .genes { margin-top:1rem; }
+  .gene { display:flex; align-items:center; gap:.5rem; margin:.2rem 0; font-size:12px; }
+  .bar { flex:1; height:8px; background:#eee; border-radius:4px; overflow:hidden; }
+  .bar > span { display:block; height:100%; background:var(--coral); }
+  .stage { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; background:#eee; color:var(--ink); }
+  .foot { color:var(--muted); font-size:12px; margin-top:2rem; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mechanogenomic virtual cell</h1>
+  <p class="sub">Move the sliders: a single physical input (tissue stiffness) drives the cell's
+     nuclear form, YAP localization, and gene activation. States are precomputed by the model.</p>
+
+  <div class="panel">
+    <div class="card">
+      <svg id="cell" viewBox="0 0 320 300" role="img" aria-label="Model-generated cell state"></svg>
+      <div style="text-align:center;margin-top:.5rem;"><span class="stage" id="stage">F0</span></div>
+    </div>
+    <div class="card controls">
+      <label>substrate stiffness E: <span class="val" id="eLabel">1 kPa</span></label>
+      <input type="range" id="eSlider" min="0" max="3" step="1" value="0">
+      <label>time in culture t: <span class="val" id="tLabel">120 h</span></label>
+      <input type="range" id="tSlider" min="0" max="3" step="1" value="3">
+      <div class="readout" id="readout"></div>
+      <div class="genes" id="genes"></div>
+    </div>
+  </div>
+
+  <p class="foot">Mechanogenomic virtual cell - a first-principles model linking tissue stiffness to
+     nuclear form and gene expression. Code and data:
+     <a href="https://github.com/Danpc11/mechanogenomic-virtual-cell">github.com/Danpc11/mechanogenomic-virtual-cell</a>.
+     This demo is a hypothesis-generating visualization, not a diagnostic.</p>
+</div>
+
+<script>
+const DATA = {"phenotype":"hepatocyte","E_grid":[1,5,13,23],"t_grid":[2,36,72,120],"states":{"E1_t2":{"E":1.0,"t":2.0,"stage":"F0","traction":86.0,"drive":10.8,"area":60.1,"yap":2.28,"lamin":1.1,"nc":90.0,"tau":16.0,"func":0.84,"genes":{"CTGF (CCN2)":0.013,"CYR61 (CCN1)":0.013,"ANKRD1":0.003,"ACTA2 (α-SMA)":0.045,"COL1A1":0.034,"LOX":0.041,"TAGLN (SM22)":0.443,"TPM1":0.481,"FN1 (fibronectin)":0.377,"LMNA (lamin A/C)":0.18,"LMNB1":0.154,"HNF4A":0.803}},"E1_t36":{"E":1.0,"t":36.0,"stage":"F0","traction":86.0,"drive":10.8,"area":106.9,"yap":2.28,"lamin":1.1,"nc":90.0,"tau":16.0,"func":0.84,"genes":{"CTGF (CCN2)":0.013,"CYR61 (CCN1)":0.013,"ANKRD1":0.003,"ACTA2 (α-SMA)":0.045,"COL1A1":0.034,"LOX":0.041,"TAGLN (SM22)":0.443,"TPM1":0.481,"FN1 (fibronectin)":0.377,"LMNA (lamin A/C)":0.18,"LMNB1":0.154,"HNF4A":0.803}},"E1_t72":{"E":1.0,"t":72.0,"stage":"F0","traction":86.0,"drive":10.8,"area":112.6,"yap":2.28,"lamin":1.1,"nc":90.0,"tau":16.0,"func":0.84,"genes":{"CTGF (CCN2)":0.013,"CYR61 (CCN1)":0.013,"ANKRD1":0.003,"ACTA2 (α-SMA)":0.045,"COL1A1":0.034,"LOX":0.041,"TAGLN (SM22)":0.443,"TPM1":0.481,"FN1 (fibronectin)":0.377,"LMNA (lamin A/C)":0.18,"LMNB1":0.154,"HNF4A":0.803}},"E1_t120":{"E":1.0,"t":120.0,"stage":"F0","traction":86.0,"drive":10.8,"area":113.3,"yap":2.28,"lamin":1.1,"nc":90.0,"tau":16.0,"func":0.84,"genes":{"CTGF (CCN2)":0.013,"CYR61 (CCN1)":0.013,"ANKRD1":0.003,"ACTA2 (α-SMA)":0.045,"COL1A1":0.034,"LOX":0.041,"TAGLN (SM22)":0.443,"TPM1":0.481,"FN1 (fibronectin)":0.377,"LMNA (lamin A/C)":0.18,"LMNB1":0.154,"HNF4A":0.803}},"E5_t2":{"E":5.0,"t":2.0,"stage":"F0","traction":88.3,"drive":32.5,"area":58.1,"yap":4.22,"lamin":1.1,"nc":90.0,"tau":48.0,"func":0.37,"genes":{"CTGF (CCN2)":0.514,"CYR61 (CCN1)":0.514,"ANKRD1":0.442,"ACTA2 (α-SMA)":0.559,"COL1A1":0.488,"LOX":0.534,"TAGLN (SM22)":0.768,"TPM1":0.789,"FN1 (fibronectin)":0.729,"LMNA (lamin A/C)":0.541,"LMNB1":0.464,"HNF4A":0.41}},"E5_t36":{"E":5.0,"t":36.0,"stage":"F0","traction":88.3,"drive":32.5,"area":119.2,"yap":4.22,"lamin":1.1,"nc":90.0,"tau":48.0,"func":0.37,"genes":{"CTGF (CCN2)":0.514,"CYR61 (CCN1)":0.514,"ANKRD1":0.442,"ACTA2 (α-SMA)":0.559,"COL1A1":0.488,"LOX":0.534,"TAGLN (SM22)":0.768,"TPM1":0.789,"FN1 (fibronectin)":0.729,"LMNA (lamin A/C)":0.541,"LMNB1":0.464,"HNF4A":0.41}},"E5_t72":{"E":5.0,"t":72.0,"stage":"F0","traction":88.3,"drive":32.5,"area":150.6,"yap":4.22,"lamin":1.1,"nc":90.0,"tau":48.0,"func":0.37,"genes":{"CTGF (CCN2)":0.514,"CYR61 (CCN1)":0.514,"ANKRD1":0.442,"ACTA2 (α-SMA)":0.559,"COL1A1":0.488,"LOX":0.534,"TAGLN (SM22)":0.768,"TPM1":0.789,"FN1 (fibronectin)":0.729,"LMNA (lamin A/C)":0.541,"LMNB1":0.464,"HNF4A":0.41}},"E5_t120":{"E":5.0,"t":120.0,"stage":"F0","traction":88.3,"drive":32.5,"area":168.5,"yap":4.22,"lamin":1.1,"nc":90.0,"tau":48.0,"func":0.37,"genes":{"CTGF (CCN2)":0.514,"CYR61 (CCN1)":0.514,"ANKRD1":0.442,"ACTA2 (α-SMA)":0.559,"COL1A1":0.488,"LOX":0.534,"TAGLN (SM22)":0.768,"TPM1":0.789,"FN1 (fibronectin)":0.729,"LMNA (lamin A/C)":0.541,"LMNB1":0.464,"HNF4A":0.41}},"E13_t2":{"E":13.0,"t":2.0,"stage":"F3","traction":85.4,"drive":46.9,"area":57.3,"yap":4.57,"lamin":1.1,"nc":90.0,"tau":68.0,"func":0.22,"genes":{"CTGF (CCN2)":0.822,"CYR61 (CCN1)":0.822,"ANKRD1":0.833,"ACTA2 (α-SMA)":0.793,"COL1A1":0.742,"LOX":0.776,"TAGLN (SM22)":0.924,"TPM1":0.931,"FN1 (fibronectin)":0.909,"LMNA (lamin A/C)":0.782,"LMNB1":0.67,"HNF4A":0.147}},"E13_t36":{"E":13.0,"t":36.0,"stage":"F3","traction":85.4,"drive":46.9,"area":113.2,"yap":4.57,"lamin":1.1,"nc":90.0,"tau":68.0,"func":0.22,"genes":{"CTGF (CCN2)":0.822,"CYR61 (CCN1)":0.822,"ANKRD1":0.833,"ACTA2 (α-SMA)":0.793,"COL1A1":0.742,"LOX":0.776,"TAGLN (SM22)":0.924,"TPM1":0.931,"FN1 (fibronectin)":0.909,"LMNA (lamin A/C)":0.782,"LMNB1":0.67,"HNF4A":0.147}},"E13_t72":{"E":13.0,"t":72.0,"stage":"F3","traction":85.4,"drive":46.9,"area":148.6,"yap":4.57,"lamin":1.1,"nc":90.0,"tau":68.0,"func":0.22,"genes":{"CTGF (CCN2)":0.822,"CYR61 (CCN1)":0.822,"ANKRD1":0.833,"ACTA2 (α-SMA)":0.793,"COL1A1":0.742,"LOX":0.776,"TAGLN (SM22)":0.924,"TPM1":0.931,"FN1 (fibronectin)":0.909,"LMNA (lamin A/C)":0.782,"LMNB1":0.67,"HNF4A":0.147}},"E13_t120":{"E":13.0,"t":120.0,"stage":"F3","traction":85.4,"drive":46.9,"area":174.1,"yap":4.57,"lamin":1.1,"nc":90.0,"tau":68.0,"func":0.22,"genes":{"CTGF (CCN2)":0.822,"CYR61 (CCN1)":0.822,"ANKRD1":0.833,"ACTA2 (α-SMA)":0.793,"COL1A1":0.742,"LOX":0.776,"TAGLN (SM22)":0.924,"TPM1":0.931,"FN1 (fibronectin)":0.909,"LMNA (lamin A/C)":0.782,"LMNB1":0.67,"HNF4A":0.147}},"E23_t2":{"E":23.0,"t":2.0,"stage":"F4","traction":78.7,"drive":53.4,"area":56.7,"yap":4.64,"lamin":1.1,"nc":90.0,"tau":79.0,"func":0.18,"genes":{"CTGF (CCN2)":0.885,"CYR61 (CCN1)":0.885,"ANKRD1":0.905,"ACTA2 (α-SMA)":0.849,"COL1A1":0.809,"LOX":0.836,"TAGLN (SM22)":0.985,"TPM1":0.986,"FN1 (fibronectin)":0.982,"LMNA (lamin A/C)":0.889,"LMNB1":0.762,"HNF4A":0.03}},"E23_t36":{"E":23.0,"t":36.0,"stage":"F4","traction":78.7,"drive":53.4,"area":107.8,"yap":4.64,"lamin":1.1,"nc":90.0,"tau":79.0,"func":0.18,"genes":{"CTGF (CCN2)":0.885,"CYR61 (CCN1)":0.885,"ANKRD1":0.905,"ACTA2 (α-SMA)":0.849,"COL1A1":0.809,"LOX":0.836,"TAGLN (SM22)":0.985,"TPM1":0.986,"FN1 (fibronectin)":0.982,"LMNA (lamin A/C)":0.889,"LMNB1":0.762,"HNF4A":0.03}},"E23_t72":{"E":23.0,"t":72.0,"stage":"F4","traction":78.7,"drive":53.4,"area":142.6,"yap":4.64,"lamin":1.1,"nc":90.0,"tau":79.0,"func":0.18,"genes":{"CTGF (CCN2)":0.885,"CYR61 (CCN1)":0.885,"ANKRD1":0.905,"ACTA2 (α-SMA)":0.849,"COL1A1":0.809,"LOX":0.836,"TAGLN (SM22)":0.985,"TPM1":0.986,"FN1 (fibronectin)":0.982,"LMNA (lamin A/C)":0.889,"LMNB1":0.762,"HNF4A":0.03}},"E23_t120":{"E":23.0,"t":120.0,"stage":"F4","traction":78.7,"drive":53.4,"area":170.0,"yap":4.64,"lamin":1.1,"nc":90.0,"tau":79.0,"func":0.18,"genes":{"CTGF (CCN2)":0.885,"CYR61 (CCN1)":0.885,"ANKRD1":0.905,"ACTA2 (α-SMA)":0.849,"COL1A1":0.809,"LOX":0.836,"TAGLN (SM22)":0.985,"TPM1":0.986,"FN1 (fibronectin)":0.982,"LMNA (lamin A/C)":0.889,"LMNB1":0.762,"HNF4A":0.03}}}};
+const STATES = DATA.states, E_GRID = DATA.E_grid, T_GRID = DATA.t_grid;
+const eSlider=document.getElementById('eSlider'), tSlider=document.getElementById('tSlider');
+eSlider.oninput = tSlider.oninput = render;
+render();
+
+function render(){
+  const E = E_GRID[+eSlider.value], t = T_GRID[+tSlider.value];
+  document.getElementById('eLabel').textContent = E+' kPa';
+  document.getElementById('tLabel').textContent = t+' h';
+  const s = STATES['E'+E+'_t'+t];
+  if(!s) return;
+  document.getElementById('stage').textContent = s.stage;
+  drawCell(s);
+  const rd = document.getElementById('readout');
+  rd.innerHTML = [
+    ['nuclear area', s.area+' um2'], ['nuclear drive', s.drive],
+    ['YAP N/C', s.yap], ['traction', s.traction+' pN'],
+    ['relaxation tau', s.tau+' h'], ['function', s.func],
+  ].map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('');
+  const top = Object.entries(s.genes).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  document.getElementById('genes').innerHTML = top.map(([g,v])=>
+    '<div class="gene"><span style="min-width:110px">'+g+'</span>'+
+    '<span class="bar"><span style="width:'+Math.min(v*100,100)+'%"></span></span>'+
+    '<span style="min-width:32px;text-align:right">'+v.toFixed(2)+'</span></div>').join('');
+}
+
+function clamp(x,a,b){ return Math.max(a,Math.min(b,x)); }
+
+function drawCell(s){
+  const cx=160, cy=145;
+  // nucleus size from area (clamped to viewBox), flattening from drive
+  const rx = clamp(24 + (s.area-100)*0.42, 26, 92);
+  const ry = clamp(rx * (1 - clamp(s.drive/140,0,0.42)), 16, 92);
+  const dots = clamp(Math.round(1 + s.yap*1.5), 2, 14);
+  const adh  = clamp(Math.round(3 + (s.drive/55)*6), 3, 10);
+  const lamW = clamp(2 + (s.lamin-1)*3, 2, 6);
+  const warm = clamp(s.drive/55, 0, 1);
+  const R=Math.round(159+(240-159)*warm), G=Math.round(225-(225-153)*warm), B=Math.round(203-(203-123)*warm);
+  const fill='rgba('+R+','+G+','+B+',0.55)';
+  const edge = warm>0.5 ? '#993c1d' : '#0f6e56';
+  const subH = 8+warm*14, subY=250;
+  let svg='';
+  // substrate bar
+  svg += '<rect x="34" y="'+subY+'" width="252" height="'+subH+'" rx="3" fill="'+(warm>0.5?"#f0997b":"#9fe1cb")+'" opacity="0.65"/>';
+  // traction arrows
+  for(let i=0;i<adh;i++){
+    const x = 60 + i*(200/Math.max(adh-1,1));
+    const y2 = subY-14-warm*18;
+    svg += '<line x1="'+x.toFixed(0)+'" y1="'+subY+'" x2="'+x.toFixed(0)+'" y2="'+y2.toFixed(0)+'" stroke="'+edge+'" stroke-width="'+(1+warm*1.5).toFixed(1)+'"/>';
+    svg += '<circle cx="'+x.toFixed(0)+'" cy="'+subY+'" r="2.5" fill="'+edge+'"/>';
+  }
+  // nucleus
+  svg += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx.toFixed(0)+'" ry="'+ry.toFixed(0)+'" fill="'+fill+'" stroke="'+edge+'" stroke-width="'+lamW.toFixed(1)+'"/>';
+  // YAP dots inside nucleus (deterministic ring)
+  for(let i=0;i<dots;i++){
+    const a=(i/dots)*6.283, rr=0.55;
+    const px=cx+Math.cos(a)*rx*rr, py=cy+Math.sin(a)*ry*rr;
+    svg += '<circle cx="'+px.toFixed(0)+'" cy="'+py.toFixed(0)+'" r="3" fill="'+edge+'"/>';
+  }
+  document.getElementById('cell').innerHTML = svg;
+}
+</script>
+</body>
+</html>
