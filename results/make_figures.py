@@ -1,14 +1,9 @@
 """
 ================================================================================
- make_nature_figures.py  —  Nature-style figures for the mechanogenomic model
+ make_nature_figures.py  —  Figures for the mechanogenomic model
 ================================================================================
 
-Regenerates the paper figures in a Nature-journal visual style, adapted from a
-reference publication script (ticks-in, minor-tick suppression, bold mathtext,
-lowercase panel letters, curated palette, insets, twin axes). Uses the real
-hepatocyte data and the model modules.
-
-Style choices (matching the reference):
+Style choices:
   * sans-serif body font, bold axis labels/titles
   * ticks pointing IN on both axes, minor ticks length 0
   * lowercase bold panel letters placed at (x=-0.06, y=0.99)
