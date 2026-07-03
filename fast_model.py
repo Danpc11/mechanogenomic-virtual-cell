@@ -23,6 +23,8 @@ Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 """
 
 from __future__ import annotations
+import json
+from pathlib import Path
 import numpy as np
 from scipy.optimize import curve_fit
 import mvirtual_cell as mvc
@@ -33,13 +35,37 @@ from mvirtual_cell import PHENOTYPES
 # 1.  PRE-CALIBRATED SATURATING PARAMETERS  (fit to the stochastic motor)
 # ============================================================================
 #   sigma(E) = Vmax * E / (K + E).  Fit R^2 in parentheses.
+#   These are the fallback defaults; saturating_params.json is the reproducible
+#   source of truth and, if present, overrides these values (see load below).
 # ---------------------------------------------------------------------------
-SATURATING_PARAMS = {
+_DEFAULT_SATURATING_PARAMS = {
     "hepatocyte": dict(Vmax=65.0, K=5.01),   # R2 = 0.982
     "MDA":        dict(Vmax=61.1, K=2.12),   # R2 = 0.975
     "AT2_lung":   dict(Vmax=72.0, K=8.50),   # R2 = 0.997
     "NHLF":       dict(Vmax=87.8, K=3.96),   # R2 = 0.982
 }
+
+
+def load_saturating_params(path="saturating_params.json"):
+    """Load saturating parameters from JSON (the reproducible source of truth).
+    Falls back to the hard-coded defaults if the file is not found, and merges
+    so any phenotype missing from the JSON still resolves."""
+    params = dict(_DEFAULT_SATURATING_PARAMS)
+    p = Path(__file__).parent / path if "__file__" in globals() else Path(path)
+    try:
+        if p.exists():
+            with open(p) as f:
+                loaded = json.load(f)
+            # keep only Vmax/K keys per phenotype
+            for k, v in loaded.items():
+                if isinstance(v, dict) and "Vmax" in v and "K" in v:
+                    params[k] = {"Vmax": float(v["Vmax"]), "K": float(v["K"])}
+    except Exception:
+        pass
+    return params
+
+
+SATURATING_PARAMS = load_saturating_params()
 
 
 # ============================================================================
