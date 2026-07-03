@@ -1,20 +1,48 @@
 {
-  "nc": {
-    "mean": 45.89907148857955,
-    "std": 2.766553263175825,
-    "ci95": [
-      40.82855570531755,
-      50.40193991444634
-    ],
-    "identifiability": 0.9201364864389
+  "_description": "Posterior over (laminAC, A_max, A0) from ABC on the COMPLETE mechanosensitive timecourse (36-120h at 1 & 23 kPa), using the recalibrated stiffness-dependent tau(E) and the saturating stress form.",
+  "_supersedes": "the earlier laminAC=1.66 estimate from 36h-truncated data.",
+  "_key_change": "With the complete dynamics, effective lamin A/C is ~2.0 (HIGHER than the previous 1.66), and the mechanical response is STRONG (2.2x fold-change), correcting the earlier 'weak response' conclusion that came from truncated data.",
+  "_limitations": [
+    "Only 2 stiffnesses (1 & 23 kPa) have complete timecourses, so laminAC, alpha (motor coupling) and A_max/A0 are partially confounded.",
+    "Fit R2~0.76 shows a systematic bias: the motor's saturating stress does not generate enough 1-vs-23 kPa contrast to match the observed 2.2x area ratio. Recalibrating alpha requires the intermediate stiffnesses (0.5, 5 kPa) at steady state (120h), which are not yet available.",
+    "Report the directly-measured fold-change (2.2x) as the primary mechanosensitivity result; treat the laminAC posterior as an effective estimate."
+  ],
+  "_R2": 0.764,
+  "_data_points": {
+    "1.0kPa_36h": 80.82,
+    "1.0kPa_72h": 97.88,
+    "1.0kPa_120h": 99.8,
+    "23.0kPa_36h": 168.96,
+    "23.0kPa_72h": 199.95,
+    "23.0kPa_120h": 224.35
   },
-  "laminAC": {
-    "mean": 1.6480620644832897,
-    "std": 0.13154088872820077,
-    "ci95": [
-      1.4103151152451525,
-      1.8595719817874554
-    ],
-    "identifiability": 0.7928768158636291
+  "parameters": {
+    "laminAC": {
+      "mean": 2.0571482023210184,
+      "std": 0.1771089339554674,
+      "ci95": [
+        1.7539154665600778,
+        2.4035377161516145
+      ],
+      "identifiability": 0.6932383279147698
+    },
+    "A_max": {
+      "mean": 336.9293909342975,
+      "std": 8.03302746679443,
+      "ci95": [
+        320.98517759656687,
+        349.29758011657555
+      ],
+      "identifiability": 0.8608638828891574
+    },
+    "A0": {
+      "mean": 83.8365187712371,
+      "std": 3.8688585821538664,
+      "ci95": [
+        75.84052831716758,
+        89.22554716480056
+      ],
+      "identifiability": 0.7319576147364246
+    }
   }
 }
