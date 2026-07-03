@@ -19,40 +19,58 @@ RNA-seq cohorts across fibrosis stages.
 
 ```bash
 pip install -r requirements.txt
-python mvirtual_cell.py           # model self-test / demo
-python test_virtual_cell.py       # validation suite (11 checks)
+python src/mvirtual_cell.py       # model self-test / demo
+python tests/test_virtual_cell.py # validation suite (11 checks)
+python results/make_nature_figures.py   # regenerate the figures
 ```
 
 ```python
+import sys; sys.path.insert(0, "src")     # or: pip install -e .
 from mvirtual_cell import (PHENOTYPES, nuclear_stress, nuclear_area_ss,
                           yap_nc_ratio, nuclear_area_time, population_mixture,
                           fibrosis_prediction, CALIBRATION)
 
 hep = PHENOTYPES["hepatocyte"]          # calibrated phenotype
 
-nuclear_stress(23.0, hep)               # nuclear stress at 23 kPa
+nuclear_stress(23.0, hep)               # nuclear mechanical drive at 23 kPa
 nuclear_area_ss(23.0, hep)              # steady-state nuclear area
 yap_nc_ratio(23.0, hep)                 # YAP nucleocytoplasmic ratio
 nuclear_area_time(23.0, t=36, ph=hep, contact_inhibition=True)  # area at 36 h
-population_mixture(23.0, t=36, ph=hep)  # (mu_basal, mu_mecano, phi)
+population_mixture(23.0, t=36, ph=hep)  # (mu_low, mu_mecano, phi)
 fibrosis_prediction(hep)                # F0->F4 prediction
 ```
 
-## Repository contents
+## Repository structure
 
-| File | Purpose |
-|---|---|
-| `mvirtual_cell.py` | The physical model and its calibrated parameters (predict). |
-| `calibration.py` | Fitting layer: recover parameters from data (calibrate). |
-| `test_virtual_cell.py` | Executable validation suite (11 qualitative checks). |
-| `inference.py` | Simulation-based inference (ABC-SMC over nc, laminAC). |
-| `symbolic.py` | Symbolic regression: discover the functional form of σ(E). |
-| `fast_model.py` | Fast analytic surrogate of the stress map (~10⁵× speed-up). |
-| `pharmacology.py` | Clinical mapping, drug perturbation, toxicity (hypotheses). |
-| `recalibration.py` | Two-level recalibration on the complete 2-120 h timecourse. |
-| `Theory_draft.md` | Manuscript draft (model, calibration, RNA-seq validation). |
-| `Data/Datasets.md` | Description of the RNA-seq cohorts used for validation. |
-| `assets/` | Study diagram. |
+```
+mechanogenomic-virtual-cell/
+├── README.md · requirements.txt · CITATION.cff · Theory_draft.md
+├── assets/                      study diagram and logos
+├── src/                         the model and its layers
+│   ├── paths.py                 centralized data/results path resolution
+│   ├── mvirtual_cell.py         physical model + calibrated parameters
+│   ├── fast_model.py            fast analytic surrogate (~10⁵× speed-up)
+│   ├── calibration.py           fitting layer (recover params from data)
+│   ├── recalibration.py         two-level recalibration on the 2-120 h timecourse
+│   ├── inference.py             simulation-based inference (ABC-SMC + timecourse)
+│   ├── symbolic.py              symbolic regression (discover σ(E) form)
+│   └── pharmacology.py          clinical mapping · drugs · toxicity (hypotheses)
+├── data/                        input data
+│   ├── hepatocyte_complete_data.json     complete 2-120 h timecourse (1 & 23 kPa)
+│   ├── hepatocyte_two_populations.csv    two-population deconvolution
+│   ├── saturating_params.json            fitted σ(E) = Vmax·E/(K+E) params
+│   └── Datasets.md                       RNA-seq cohort descriptions
+├── results/                     outputs
+│   ├── hepatocyte_posterior.json         ABC timecourse posterior
+│   ├── make_nature_figures.py            figure generation script
+│   └── figures/                          Fig1-3 + recalibration (pdf + png)
+└── tests/
+    └── test_virtual_cell.py     11 validations (runs in CI)
+```
+
+Modules import each other by name; data and result paths are resolved through
+`src/paths.py`, so scripts work from any working directory. Scripts outside
+`src/` (tests, figure generation) add `src/` to the path automatically.
 
 > **Note on σ.** `nuclear_stress` returns a *nuclear mechanical drive*
 > (transmitted nuclear load) — a monotone scalar with force units, not a stress
