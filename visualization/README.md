@@ -25,6 +25,6 @@ from the model's own state outputs, not hand-drawn cartoons.
 
 ## Web demo
 
-`docs/virtual_cell_demo.html` is a self-contained interactive demo (sliders for
+`virtual_cell_demo.html` is a self-contained interactive demo (sliders for
 stiffness and time) suitable for GitHub Pages. Enable Pages on the `docs/`
 folder to publish it.
