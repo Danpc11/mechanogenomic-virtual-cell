@@ -223,10 +223,7 @@ mechanogenomic-virtual-cell/
 ├── visualization/                 # model-generated visualization
 │   ├── make_state_grid.py
 │   └── render_pyvista_virtual_cell.py   # 3D (PyVista + Trame)
-│
-├── docs/                          # web demo (GitHub Pages)
 │   ├── virtual_cell_demo.html
-│   └── states.json
 │
 └── test/
     └── test_virtual_cell.py
