@@ -107,15 +107,19 @@ class MotorEmulator:
 # ============================================================================
 # 1.  PARAMETER SPACE & PRIORS
 # ============================================================================
-#   Each parameter: (name, low, high) uniform prior. Choose the subset you
-#   want to infer; the rest are held at the base phenotype's values.
+#   Each parameter: (name, low, high) uniform prior.
+#   NOTE: the fast ABC-SMC path (abc_smc + MotorEmulator) currently supports
+#   ONLY priors over {nc, laminAC}. The wider set below (nm, kc, alpha) is the
+#   target space for the optional neural path (try_sbi_npe) or a future full
+#   emulator grid; abc_smc() will raise NotImplementedError for those.
 # ---------------------------------------------------------------------------
+ABC_SUPPORTED = {"nc", "laminAC"}          # what abc_smc() can infer today
 DEFAULT_PRIORS = {
-    "nc":      (40.0, 160.0),   # substrate clutches
-    "nm":      (25.0, 90.0),    # myosin motors
-    "kc":      (0.5, 2.0),      # clutch stiffness (pN/nm)
-    "alpha":   (0.05, 0.25),    # E -> kappa coupling
-    "laminAC": (0.3, 2.5),      # relative lamin A/C (nuclear stiffness)
+    "nc":      (40.0, 160.0),   # substrate clutches      [abc_smc supported]
+    "nm":      (25.0, 90.0),    # myosin motors           [sbi/neural only]
+    "kc":      (0.5, 2.0),      # clutch stiffness (pN/nm)[sbi/neural only]
+    "alpha":   (0.05, 0.25),    # E -> kappa coupling     [sbi/neural only]
+    "laminAC": (0.3, 2.5),      # relative lamin A/C      [abc_smc supported]
 }
 
 
@@ -170,6 +174,12 @@ def abc_smc(observed_summary, Es, emulator=None, priors=None, base=None,
     ~1 well constrained)."""
     if priors is None:
         priors = {"nc": (40.0, 160.0), "laminAC": (0.3, 2.5)}
+    if set(priors) != {"nc", "laminAC"}:
+        raise NotImplementedError(
+            "The current ABC emulator supports only priors over 'nc' and "
+            "'laminAC' (it tabulates sigma(E, nc) and applies laminAC "
+            "analytically). For nm/kc/alpha, use try_sbi_npe() or extend "
+            "MotorEmulator to a full grid.")
     if base is None:
         base = PHENOTYPES["hepatocyte"]
     if emulator is None:
@@ -307,6 +317,94 @@ def _demo():
     print("    identifiability ~1 -> parameter pinned down by the data")
     print("    identifiability ~0 -> data do not constrain this parameter")
     print("=" * 72)
+
+
+# ============================================================================
+# 6.  TIMECOURSE INFERENCE  (uses the complete 2-120 h dynamics)
+# ============================================================================
+#   The recalibration data are TRAJECTORIES A(E, t), not static points. This
+#   infers the posterior over (laminAC, A_max) from the full mechanosensitive
+#   dynamics at 1 and 23 kPa, using the model's own nuclear_area_time with the
+#   stiffness-dependent tau(E). More information than the steady-state-only fit,
+#   and consistent with the recalibrated dynamics.
+# ---------------------------------------------------------------------------
+def abc_timecourse(observed, base=None, priors=None, n_particles=300,
+                   n_rounds=5, reps=4, alpha=0.5, seed=0, verbose=True):
+    """Infer (laminAC, A_max) from the complete mechanosensitive timecourse.
+
+    observed : dict {(E_kPa, t_h): area_um2}  (mechanosensitive population)
+    Returns the posterior sample, per-parameter mean/std/CI/identifiability,
+    and the model fit at the posterior mean.
+    """
+    if base is None:
+        base = PHENOTYPES["hepatocyte"]
+    if priors is None:
+        priors = {"laminAC": (0.5, 2.5), "A_max": (150.0, 350.0),
+                  "A0": (40.0, 90.0)}
+    rng = np.random.default_rng(seed)
+    names = list(priors)
+    lows = np.array([priors[k][0] for k in names])
+    highs = np.array([priors[k][1] for k in names])
+    keys = sorted(observed)
+    y = np.array([observed[k] for k in keys])
+
+    def sim(theta):
+        lam = float(theta[names.index("laminAC")])
+        A_max = float(theta[names.index("A_max")])
+        A0 = float(theta[names.index("A0")]) if "A0" in names else base.A_min + 15.0
+        ph = replace(base, laminAC=lam, A_max=A_max)
+        out = []
+        for E, t in keys:
+            try:
+                import fast_model as fm
+                sig = float(fm.nuclear_stress_fast(E, "hepatocyte"))
+            except Exception:
+                sig = mvc.nuclear_stress(E, ph, reps=reps)
+            A_ss = ph.A_min + (ph.A_max - ph.A_min) * sig / (sig + ph.s0 * lam)
+            tau = mvc.tau_of_E(E, ph)
+            out.append(A_ss + (A0 - A_ss) * np.exp(-t / tau))
+        return np.array(out)
+
+    def dist(theta):
+        return float(np.sqrt(np.mean((sim(theta) - y) ** 2)))
+
+    # round 0
+    theta = rng.uniform(lows, highs, size=(n_particles * 6, len(names)))
+    d = np.array([dist(t) for t in theta])
+    keep = np.argsort(d)[:n_particles]
+    particles = theta[keep]
+    tol = np.quantile(d[keep], alpha)
+    if verbose:
+        print(f"  round 0: tol={tol:.2f}  best d={d[keep][0]:.2f}")
+    for r in range(1, n_rounds):
+        cov = np.cov(particles.T) + 1e-6 * np.eye(len(names))
+        L = np.linalg.cholesky(cov)
+        new, nd, acc, tries = [], [], 0, 0
+        while acc < n_particles and tries < n_particles * 300:
+            cand = particles[rng.integers(n_particles)] + L @ rng.standard_normal(len(names))
+            tries += 1
+            if np.any(cand < lows) or np.any(cand > highs):
+                continue
+            dc = dist(cand)
+            if dc <= tol:
+                new.append(cand); nd.append(dc); acc += 1
+        if acc > 0:
+            particles = np.array(new)
+            tol = np.quantile(nd, alpha)
+        if verbose:
+            print(f"  round {r}: accepted={acc}  tol={tol:.2f}")
+
+    prior_std = (highs - lows) / np.sqrt(12)
+    mean, std = particles.mean(0), particles.std(0)
+    ident = 1.0 - std / prior_std
+    summary = {k: dict(mean=float(mean[i]), std=float(std[i]),
+                       ci95=(float(np.percentile(particles[:, i], 2.5)),
+                             float(np.percentile(particles[:, i], 97.5))),
+                       identifiability=float(ident[i]))
+               for i, k in enumerate(names)}
+    fit = {f"{E}kPa_{t}h": float(v) for (E, t), v in zip(keys, sim(mean))}
+    return dict(names=names, posterior=particles, summary=summary,
+                observed=observed, fit=fit)
 
 
 if __name__ == "__main__":
