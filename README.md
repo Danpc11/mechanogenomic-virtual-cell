@@ -576,43 +576,6 @@ This repository is an active research model. Important limitations:
 
 ---
 
-## Suggested paper storyline
-
-Working title:
-
-```text
-A mechanogenomic virtual-cell model predicts stiffness-driven transcriptional trajectories
-```
-
-Core claim:
-
-```text
-A phenotype-aware physical virtual-cell state predicts stiffness-driven mechanogenomic trajectories better than stiffness alone.
-```
-
-Current reference case study:
-
-```text
-Primary hepatocytes and hepatic fibrosis.
-```
-
-Planned extension:
-
-```text
-Additional phenotypes will be incorporated through phenotype-specific mechanical, nuclear and transcriptional parameter sets.
-```
-
-Planned figure logic:
-
-1. **Framework** — define the phenotype-aware virtual-cell state.
-2. **Physical model** — motor–clutch and nuclear mechanics.
-3. **Hydrogel calibration** — nuclear-area dynamics and two-population fitting.
-4. **Fibrosis prediction** — F0–F4 stiffness mapping and transcriptomic trajectories.
-5. **Benchmark and ablation** — compare against linear, power-law and Hill/sigmoid baselines.
-6. **qPCR validation** — test predicted genes in hepatocytes on fibrosis-like hydrogels.
-
----
-
 ## Documentation
 
 Additional documentation is available in the [project Wiki](https://github.com/Danpc11/mechanogenomic-virtual-cell/wiki), including:
