@@ -8,6 +8,10 @@
 ![SciPy](https://img.shields.io/badge/SciPy-supported-blue)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Danpc11/mechanogenomic-virtual-cell/blob/main/demo/virtual_cell_demo.ipynb)
 
+<a href="https://colab.research.google.com/github/Danpc11/mechanogenomic-virtual-cell/blob/main/demo/virtual_cell_demo.ipynb" target="_blank" rel="noopener noreferrer">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+</a>
+
 **Mechanogenomic Virtual Cell** is a phenotype-aware physical-computational framework for modeling how extracellular stiffness is converted into cellular traction, nuclear mechanotransduction, YAP/TAZ activity and mechanosensitive transcriptional trajectories.
 
 The current reference case study focuses on **primary hepatocytes and hepatic fibrosis**, where tissue stiffening is used as a mechanical axis to predict nuclear remodeling and fibrosis-associated transcriptional trajectories. The framework is designed to support additional mechanically distinct cell phenotypes.
