@@ -1,0 +1,31 @@
+# version control & CI
+.git
+.github
+.gitignore
+
+# python caches
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# local envs
+.venv/
+venv/
+env/
+
+# large / regenerable outputs
+results/figures/
+*.png
+*.jpg
+*.svg
+!assets/*.png
+
+# os cruft
+.DS_Store
+Thumbs.db
+
+# docs build
+docs/_build/
