@@ -262,11 +262,9 @@ mechanogenomic-virtual-cell/
 │   ├── render_fluorescence.py           # immunofluorescence-style (F-actin/DAPI/YAP)
 │   ├── render_cross_section_hq.py       # labeled anatomical cross-section (SVG)
 │   ├── render_cell_realistic.py         # realistic adhered-cell 3D
-│   └── render_pyvista_virtual_cell.py   # 3D (PyVista + Trame)
-│
-├── docs/                          # web demo (GitHub Pages)
-│   ├── virtual_cell_demo.html
-│   └── states.json
+│   ├── render_pyvista_virtual_cell.py   # 3D (PyVista + Trame)
+│   ├── virtual_cell_demo.html           # self-contained web demo (GitHub Pages)
+│   └── states.json                      # precomputed states for the web demo
 │
 └── test/
     └── test_virtual_cell.py       # 17 validations (runs in CI)
@@ -751,9 +749,9 @@ python visualization/render_pyvista_virtual_cell.py --serve   # interactive 3D a
 
 The 3D renderers require the visualization extra: `pip install -e ".[viz]"`.
 
-**Web demo (`docs/`)** — a self-contained `virtual_cell_demo.html` with sliders
-for stiffness and time, publishable via GitHub Pages. Regenerate its states with
-`python visualization/make_state_grid.py`.
+**Web demo (`visualization/`)** — a self-contained `virtual_cell_demo.html` with
+sliders for stiffness and time, publishable via GitHub Pages. Regenerate its
+states with `python visualization/make_state_grid.py`.
 
 ---
 
