@@ -1,0 +1,26 @@
+# ==============================================================================
+#  docker-compose — convenience wrapper
+#
+#  Run from the REPOSITORY ROOT:
+#    docker compose -f docker/docker-compose.yml run --rm mvcell   # test suite
+#    docker compose -f docker/docker-compose.yml up jupyter        # notebook :8888
+# ==============================================================================
+services:
+
+  mvcell:
+    build:
+      context: ..                    # repo root = build context
+      dockerfile: docker/Dockerfile
+    image: mvcell:latest
+    command: ["test"]
+
+  jupyter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: mvcell:latest
+    command: ["jupyter"]
+    ports:
+      - "8888:8888"
+    volumes:
+      - ..:/app
