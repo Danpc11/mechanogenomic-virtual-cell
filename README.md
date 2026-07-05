@@ -6,6 +6,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![NumPy](https://img.shields.io/badge/NumPy-supported-blue)
 ![SciPy](https://img.shields.io/badge/SciPy-supported-blue)
+![Docker](https://img.shields.io/badge/Docker-reproducible-2496ED)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Danpc11/mechanogenomic-virtual-cell/blob/main/demo/virtual_cell_demo.ipynb)
 
 **Mechanogenomic Virtual Cell** is a phenotype-aware physical-computational framework for modeling how extracellular stiffness is converted into cellular traction, nuclear mechanotransduction, YAP/TAZ activity and mechanosensitive transcriptional trajectories.
@@ -177,6 +178,29 @@ fibrosis = fibrosis_prediction(hep)
 
 ---
 
+## Reproducible environment (Docker)
+
+For fully reproducible runs — same Python, same dependency versions, no local
+setup — use the container. It runs the model, tests, figures, renderers, and the
+notebook identically on any machine. Build from the repo root, pointing at the
+Dockerfile in `docker/`:
+
+```bash
+docker build -t mvcell -f docker/Dockerfile .
+
+docker run --rm mvcell                 # run the validation suite (proves the build)
+docker run --rm mvcell demo            # VirtualCell demo
+docker run --rm -p 8888:8888 mvcell jupyter   # serve the interactive notebook
+docker run --rm -it mvcell bash        # interactive shell
+```
+
+Rendering runs headless inside the container, so the fluorescence, cross-section,
+and static PyVista renderers all work without a display. See
+[`docker/README.md`](docker/README.md) for the full guide and `docker compose`
+usage.
+
+---
+
 ## Repository structure
 
 ```text
@@ -187,6 +211,13 @@ mechanogenomic-virtual-cell/
 ├── LICENSE
 ├── CITATION.cff
 ├── Theory_draft.md
+│
+├── docker/                        # reproducible container
+│   ├── Dockerfile                 # build: docker build -t mvcell -f docker/Dockerfile .
+│   ├── docker-compose.yml
+│   ├── docker-entrypoint.sh
+│   └── README.md                  # Docker usage guide
+├── .dockerignore                  # (repo root — required there by Docker)
 │
 ├── assets/
 │   ├── Diagram_mvirtual_cell.png
@@ -863,3 +894,4 @@ See:
 ```text
 LICENSE
 ```
+
