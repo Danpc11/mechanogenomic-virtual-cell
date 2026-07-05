@@ -59,15 +59,6 @@ class CellState:
         return asdict(self)
 
 
-# fibrosis stage lookup (kPa) from the model's mapping
-def _stage_of_E(E):
-    if E < 6.0:    return "F0"
-    if E < 8.0:    return "F1"
-    if E < 10.0:   return "F2"
-    if E < 14.0:   return "F3"
-    return "F4"
-
-
 # ---------------------------------------------------------------------------
 # The virtual cell
 # ---------------------------------------------------------------------------
@@ -126,7 +117,7 @@ class VirtualCell:
             nuclear_drive=float(sig), nuclear_area=float(area),
             yap_nc=float(yap), laminAC=float(ph.laminAC),
             nc_eff=float(nc_eff), tau_h=float(tau),
-            function_index=float(func), fibrosis_stage=_stage_of_E(E),
+            function_index=float(func), fibrosis_stage=mvc.stage_of_stiffness(E),
             gene_scores={})
         # attach mechanogenomic output
         state.gene_scores = self._gene_scores_from_state(state)
@@ -180,7 +171,6 @@ class VirtualCell:
         if self.use_fast:
             try:
                 import fast_model as fm
-                base = PHENOTYPES.get("hepatocyte")
                 if (self.phenotype_key == "hepatocyte"):
                     return float(fm.nuclear_stress_fast(E, "hepatocyte"))
             except Exception:

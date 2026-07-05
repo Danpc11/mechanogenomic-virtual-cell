@@ -87,12 +87,11 @@ GENES = {
     "LMNA":   Gene("LMNA (lamin A/C)", "linear", "nuclear envelope",
                    drive_ref=60, note="validated vs inferred lamin"),
     "LMNB1":  Gene("LMNB1", "linear", "nuclear envelope", drive_ref=70),
-    # --- hepatocyte identity (falls with drive): inverse linear ---
-    "HNF4A":  Gene("HNF4A", "linear", "hepatocyte identity (inverse)",
-                   drive_ref=55, note="declines as drive rises (dedifferentiation)"),
 }
-# HNF4A declines: handled via inverse in score_genes.
-_INVERSE = {"HNF4A"}
+# Core genes with an inverse (falls-with-drive) response; currently none —
+# hepatocyte identity markers like HNF4A are phenotype-specific (see
+# _PHENO_INVERSE below), not part of the shared core panel.
+_INVERSE = set()
 
 
 # ---------------------------------------------------------------------------

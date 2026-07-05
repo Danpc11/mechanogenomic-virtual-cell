@@ -293,12 +293,9 @@ def map_patient(liver_stiffness_kPa, ph=None, reps=6):
     E = float(liver_stiffness_kPa)
     if ph is None:
         ph = PHENOTYPES["hepatocyte"]
-    # approximate VCTE stage cutoffs (kPa)
-    if E < 6.0:       stage = "F0 (no/minimal fibrosis)"
-    elif E < 8.0:     stage = "F1 (mild)"
-    elif E < 10.0:    stage = "F2 (significant)"
-    elif E < 14.0:    stage = "F3 (advanced)"
-    else:             stage = "F4 (cirrhosis)"
+    # approximate VCTE stage cutoffs (kPa); single source of truth in
+    # mvirtual_cell.stage_of_stiffness / STAGE_LABELS
+    stage = mvc.STAGE_LABELS[mvc.stage_of_stiffness(E)]
     return dict(
         liver_stiffness_kPa=E, fibrosis_stage=stage,
         yap_activity=mvc.yap_nc_ratio(E, ph, reps=reps),

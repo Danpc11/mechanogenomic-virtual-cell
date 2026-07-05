@@ -292,6 +292,33 @@ FIBROSIS_STIFFNESS = {"F0": 2.5, "F1": 7.0, "F2": 9.5, "F3": 13.0, "F4": 26.0}
 #   F0 healthy liver spans ~1-4 kPa; 2.5 kPa (midpoint) used as the single
 #   representative value for the simulation. F4 cirrhosis: ~26 kPa (up to 48-69).
 
+#   Stage classification cutoffs (kPa) -- approximate VCTE/elastography stage
+#   boundaries, distinct from the single representative values above. This is
+#   the SINGLE SOURCE OF TRUTH for turning a stiffness into a stage label: both
+#   VirtualCell (short code, e.g. "F0") and pharmacology.map_patient
+#   (descriptive label, via STAGE_LABELS) derive from stage_of_stiffness().
+STAGE_CUTOFFS_KPA = [6.0, 8.0, 10.0, 14.0]   # upper bound of F0, F1, F2, F3
+STAGE_LABELS = {
+    "F0": "F0 (no/minimal fibrosis)",
+    "F1": "F1 (mild)",
+    "F2": "F2 (significant)",
+    "F3": "F3 (advanced)",
+    "F4": "F4 (cirrhosis)",
+}
+
+
+def stage_of_stiffness(E):
+    """Classify a stiffness E (kPa) into a fibrosis stage code (F0-F4) using
+    STAGE_CUTOFFS_KPA. Cutoffs are approximate literature values (VCTE,
+    MASLD/NAFLD); they vary by etiology and device and are indicative, not
+    diagnostic. Look up STAGE_LABELS[code] for the descriptive label."""
+    stages = list(FIBROSIS_STIFFNESS)   # ["F0", "F1", "F2", "F3", "F4"]
+    for stage, cutoff in zip(stages[:-1], STAGE_CUTOFFS_KPA):
+        if E < cutoff:
+            return stage
+    return stages[-1]
+
+
 def fibrosis_prediction(ph: Phenotype = None, reps=8, lamin_feedback=False):
     """Predict mechanotransduction output across fibrosis stages F0->F4.
     Returns a dict of arrays keyed by stage list.
