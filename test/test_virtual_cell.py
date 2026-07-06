@@ -193,6 +193,122 @@ def test_tau_scales_with_stiffness():
           f"{tau_stiff:.0f} h (stiff); stiff still growing 36->120 h")
 
 
+def test_virtual_cell_interface():
+    """The VirtualCell class produces a coherent state and state vector."""
+    from virtual_cell import VirtualCell
+    cell = VirtualCell("hepatocyte")
+    soft = cell.simulate(1.0, t=120)
+    stiff = cell.simulate(23.0, t=120)
+    assert stiff.nuclear_drive > soft.nuclear_drive, "drive rises with stiffness"
+    assert stiff.yap_nc > soft.yap_nc, "YAP rises with stiffness"
+    assert stiff.function_index < soft.function_index, "function falls on stiff"
+    v = cell.state_vector(stiff)
+    assert len(v) == len(cell.STATE_FIELDS), "state vector length matches fields"
+    assert stiff.fibrosis_stage == "F4" and soft.fibrosis_stage == "F0"
+    print(f"  [OK] VirtualCell: soft F0 (YAP {soft.yap_nc:.1f}) -> "
+          f"stiff F4 (YAP {stiff.yap_nc:.1f}); {len(v)}-D state vector")
+
+
+def test_gene_module_response_shapes():
+    """Sigmoid genes are switch-like (low at F0, high at F4); identity genes fall."""
+    import gene_module as gm
+    sig_soft = mvc.nuclear_stress(1.0, PHENOTYPES["hepatocyte"], reps=REPS)
+    sig_stiff = mvc.nuclear_stress(23.0, PHENOTYPES["hepatocyte"], reps=REPS)
+    soft = gm.score_genes(sig_soft)
+    stiff = gm.score_genes(sig_stiff)
+    # sigmoid YAP target: big jump
+    assert stiff["CTGF (CCN2)"] - soft["CTGF (CCN2)"] > 0.5, "CTGF switch-like"
+    # inverse identity gene falls
+    assert stiff["HNF4A"] < soft["HNF4A"], "HNF4A (identity) falls with stiffness"
+    # actionable hypotheses emerge at high stiffness
+    hyp = gm.actionable_hypotheses(sig_stiff)
+    assert len(hyp) >= 3, "actionable hypotheses at F4"
+    print(f"  [OK] gene shapes: CTGF {soft['CTGF (CCN2)']:.2f}->{stiff['CTGF (CCN2)']:.2f}, "
+          f"HNF4A {soft['HNF4A']:.2f}->{stiff['HNF4A']:.2f}; {len(hyp)} hypotheses")
+
+
+def test_benchmark_full_generalizes():
+    """Full model generalizes (CV) at least as well as baselines and uniquely
+    captures the temporal rise at 23 kPa."""
+    import benchmark as bm
+    E, t, A = bm.load_area_data()
+    cv = {c["name"]: c["cv_R2"] for c in
+          [bm.cross_validate(m, E, t, A) for m in bm.MODELS]}
+    full = [v for k, v in cv.items() if "full" in k][0]
+    simple = max(v for k, v in cv.items() if "full" not in k)
+    assert full >= simple - 0.02, "full model should not generalize worse"
+    fits = [m().fit(E, t, A) for m in bm.MODELS]
+    full_fit = [f for f in fits if "full" in f.name][0]
+    lin_fit = [f for f in fits if "linear" in f.name][0]
+    a36, a120 = full_fit.predict(23.0, 36)[0], full_fit.predict(23.0, 120)[0]
+    l36, l120 = lin_fit.predict(23.0, 36)[0], lin_fit.predict(23.0, 120)[0]
+    assert a120 - a36 > 20, "full model captures the temporal rise"
+    assert abs(l120 - l36) < 1, "linear model is time-flat (structural limit)"
+    print(f"  [OK] benchmark: full CV-R2={full:.2f} >= simple {simple:.2f}; "
+          f"full rises {a36:.0f}->{a120:.0f} at 23 kPa, linear flat")
+
+
+def test_sensitivity_identifies_key_params():
+    """Sensitivity flags the nuclear gate (laminAC) and adhesion (nc/kc) group
+    as the parameters the data must constrain, and alpha as low-impact."""
+    import sensitivity as sa
+    res = sa.run_sensitivity(verbose=False, global_analysis=True, n=1024)
+    sob = res["sobol"]["nuclear_area"]
+    # laminAC (nuclear gate) should carry substantial variance
+    assert sob["laminAC"] > 0.3, "lamin dominates nuclear-area variance"
+    # the adhesion/clutch group (nc, kc) should also matter
+    assert sob["nc"] + sob["kc"] > 0.3, "adhesion/clutch group matters"
+    # alpha (E->kappa coupling) is low-impact -> safe to fix (matches inference)
+    assert sob["alpha"] < 0.2, "alpha is low-sensitivity (safe to fix)"
+    print(f"  [OK] sensitivity: area driven by lamin (S={sob['laminAC']:.2f}) & "
+          f"adhesion nc+kc (S={sob['nc']+sob['kc']:.2f}); alpha low "
+          f"(S={sob['alpha']:.2f})")
+
+
+def test_bootstrap_fold_change_ci():
+    """Bootstrap CI on the stiffness fold-change contains the ~2.2x estimate
+    and excludes 1 (a real mechanical response)."""
+    import stats_ci as st
+    import json
+    from pathlib import Path
+    try:
+        from paths import DATA_DIR
+        p = DATA_DIR / "hepatocyte_complete_data.json"
+    except Exception:
+        p = Path("hepatocyte_complete_data.json")
+    d = json.load(open(p))
+    soft = [a for a in d["complete_timecourse"]["1_kPa"]["pop_high"] if a]
+    stiff = [a for a in d["complete_timecourse"]["23_kPa"]["pop_high"] if a]
+    fc = st.fold_change_ci(soft, stiff, n_boot=3000)
+    assert fc["fold_change"] > 1.5, "fold-change is a real response"
+    assert fc["ci_low"] > 1.0, "CI excludes 1 (no response)"
+    ci = st.bootstrap_ci(stiff, n_boot=2000)
+    assert ci["ci_low"] < ci["estimate"] < ci["ci_high"], "CI brackets estimate"
+    print(f"  [OK] bootstrap: fold-change {fc['fold_change']:.2f}x "
+          f"95% CI [{fc['ci_low']:.2f}, {fc['ci_high']:.2f}] (excludes 1)")
+
+
+def test_phenotype_specific_genes():
+    """Each phenotype exposes its own identity/lineage markers, and they respond
+    in the biologically correct direction (identity down, effectors up)."""
+    import gene_module as gm
+    # MDA (invasive cancer): invasion/EMT effectors rise on stiff
+    sig = mvc.nuclear_stress(23.0, PHENOTYPES["hepatocyte"], reps=REPS)
+    mda = gm.score_genes(sig, phenotype="MDA")
+    assert mda.get("MMP9", 0) > 0.5, "MDA invasion marker MMP9 up on stiff"
+    # hepatocyte identity falls
+    hep = gm.score_genes(sig, phenotype="hepatocyte")
+    assert hep.get("HNF4A", 1) < 0.3, "hepatocyte identity HNF4A down on stiff"
+    assert hep.get("ALB (albumin)", 1) < 0.3, "albumin (function) down on stiff"
+    # panels differ between phenotypes
+    hep_genes = set(gm.genes_for("hepatocyte"))
+    mda_genes = set(gm.genes_for("MDA"))
+    assert hep_genes != mda_genes, "phenotypes have distinct gene panels"
+    assert "HNF4A" in hep_genes and "HNF4A" not in mda_genes
+    print(f"  [OK] phenotype genes: hepatocyte identity falls (HNF4A/ALB), "
+          f"MDA invasion rises (MMP9={mda['MMP9']:.2f}); panels differ")
+
+
 # ---------------------------------------------------------------------------
 ALL_TESTS = [
     test_biphasic_traction,
@@ -206,6 +322,12 @@ ALL_TESTS = [
     test_fibrosis_monotonic,
     test_optimum_sensitive_to_clutch_not_motor,
     test_tau_scales_with_stiffness,
+    test_virtual_cell_interface,
+    test_gene_module_response_shapes,
+    test_benchmark_full_generalizes,
+    test_sensitivity_identifies_key_params,
+    test_bootstrap_fold_change_ci,
+    test_phenotype_specific_genes,
 ]
 
 
