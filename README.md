@@ -256,7 +256,12 @@ mechanogenomic-virtual-cell/
 │
 ├── results/
 │   ├── hepatocyte_posterior.json
-│   └── make_figures.py
+│   ├── make_figures.py
+│   ├── compute_form_comparison.py     # caches the functional-form R² comparison
+│   └── form_comparison.json
+│
+├── transcriptomics/                   # R pipeline: RNA-seq validation of the gene panel
+│   └── README.md                      # DESeq2 fits over 3 GEO cohorts (391 samples)
 │
 ├── demo/                          # interactive Colab notebook
 │   └── virtual_cell_demo.ipynb
@@ -662,25 +667,20 @@ Representative modules include:
 
 ### `data/RANseq_datasets_info.md`
 
-RNA-seq cohort notes for fibrosis-stage transcriptomic validation. Documents the
-human liver RNA-seq datasets used to compare model-predicted mechanotransduction
-outputs against fibrosis-associated transcriptional trajectories.
+Background notes on the three human liver RNA-seq cohorts
+([GSE130970](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE130970),
+[GSE135251](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE135251),
+[GSE162694](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE162694)) used
+for fibrosis-stage transcriptomic validation — snap-frozen NAFLD/NASH liver
+biopsies spanning F0–F4.
 
-The project integrates three public human liver RNA-seq cohorts from the Gene
-Expression Omnibus (GEO), all derived from snap-frozen liver biopsies spanning
-the full fibrosis spectrum (histologically normal F0 controls through F1–F4),
-with NAFLD/NASH-associated fibrosis as the dominant etiology:
-
-| Dataset | Cohort | Samples | Notes |
-|---|---|---|---|
-| [GSE130970](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE130970) | NAFLD severity | 78 biopsies (6 control, 72 NAFLD/NASH) | bulk RNA-seq, F0–F4 |
-| [GSE135251](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE135251) | NAFLD/NASH staging | large staged cohort | fibrosis-stage transcriptomes |
-| [GSE162694](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE162694) | NAFLD fibrosis | staged biopsies | fibrosis-stage transcriptomes |
-
-These provide the transcriptional trajectories against which the phenotype-aware
-gene panels (`gene_module.py`) are validated — the model predicts each gene's
-response-shape from its mechanotransduction role *before* fitting to this data,
-so the comparison is a falsifiable test rather than a post-hoc fit.
+The full processing pipeline, sample selection, and per-stage sample counts live
+in the [`transcriptomics/`](transcriptomics/) directory (see the
+[transcriptomics README](transcriptomics/README.md)). These datasets provide the
+transcriptional trajectories against which the phenotype-aware gene panels
+(`gene_module.py`) are validated — the model predicts each gene's response-shape
+from its mechanotransduction role *before* fitting to this data, so the
+comparison is a falsifiable test rather than a post-hoc fit.
 
 ---
 
@@ -830,6 +830,42 @@ Approximate fibrosis stiffness mapping used by the model:
 | F2 | ~9.5 kPa |
 | F3 | ~13 kPa |
 | F4 | ~23–26 kPa |
+
+---
+
+## Transcriptomic validation (`transcriptomics/`)
+
+An R pipeline that builds the mechanosensitive gene panel and fits its
+fibrosis-stage expression trajectories from the three human liver RNA-seq
+cohorts, providing the empirical test of the model's gene-level predictions. It
+runs from the curated gene list through per-gene model fits:
+
+| Script | Purpose |
+|---|---|
+| `0_update_gene_list.R` | Add TEAD1–4 / SRF, fix symbols, annotate Ensembl IDs |
+| `1_Get_collapsse_data.R` | Download the three GEO datasets, collapse to common genes, build count/metadata masters |
+| `1_1_dds.R` | Per-dataset DESeq2 normalization over F0–F4, sex effect removed |
+| `1_2_Stage_mean_genes.R` | Mean panel expression per fibrosis stage × dataset |
+| `1_3_Fit_filter.R` | Fit linear / power-law / sigmoid per gene (best by AIC), keep direction-concordant genes |
+
+After filtering (fibrosis-graded NAFLD/NASH biopsies only; missing-sex samples
+dropped), **391 samples** across the three cohorts feed the DESeq2 fits:
+
+| Dataset | F0 | F1 | F2 | F3 | F4 | Total |
+|---|---|---|---|---|---|---|
+| GSE130970 | 18 | 28 | 9 | 14 | 2 | 71 |
+| GSE135251 | 38 | 48 | 54 | 54 | 14 | 208 |
+| GSE162694 | 35 | 30 | 27 | 8 | 12 | 112 |
+| **All** | **91** | **106** | **90** | **76** | **28** | **391** |
+
+Here F0 means NAFLD with steatosis but no fibrosis (not a healthy baseline);
+histologically normal controls are excluded. Full details, sample metadata
+columns, and run notes are in [`transcriptomics/README.md`](transcriptomics/README.md).
+
+This is the falsifiable test of the `gene_module.py` predictions: each gene's
+response-shape is assigned from its mechanotransduction role *before* fitting,
+and the pipeline keeps only genes whose measured fibrosis-stage trajectory is
+direction-concordant with the prediction.
 
 ---
 
