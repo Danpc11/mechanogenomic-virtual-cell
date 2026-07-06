@@ -8,10 +8,10 @@
 #  IMPORTANT: build from the REPOSITORY ROOT (so the whole project is in the
 #  build context), pointing at this file with -f:
 #
-#  Build:   docker build -t mvcell -f docker/Dockerfile .
-#  Test:    docker run --rm mvcell                 # runs the validation suite
-#  Shell:   docker run --rm -it mvcell bash
-#  Jupyter: docker run --rm -p 8888:8888 mvcell jupyter
+#  Build:   docker build -t pipelinesinmegen/mvcell:v0.1 -f docker/Dockerfile .
+#  Test:    docker run --rm pipelinesinmegen/mvcell:v0.1                 # runs the validation suite
+#  Shell:   docker run --rm -it pipelinesinmegen/mvcell:v0.1 bash
+#  Jupyter: docker run --rm -p 8888:8888 pipelinesinmegen/mvcell:v0.1 jupyter
 # ==============================================================================
 
 FROM python:3.11-slim-bookworm
