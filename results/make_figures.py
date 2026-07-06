@@ -1,6 +1,6 @@
 """
 ================================================================================
- make_nature_figures.py  —  Figures for the mechanogenomic model
+ make_figures.py  —  Figures for the mechanogenomic model
 ================================================================================
 
 Style choices:
@@ -15,7 +15,6 @@ Note: matplotlib mathtext is used for symbols (LaTeX-free) so it runs anywhere.
 Set USE_TEX=True if a full LaTeX install with type1cm/amsmath is available.
 
 Outputs: figuras_nature/Fig1..Fig4 (pdf + png, 300 dpi).
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
@@ -36,6 +35,20 @@ import mvirtual_cell as mvc
 from mvirtual_cell import PHENOTYPES
 import fast_model as fm
 from paths import DATA_DIR, RESULTS_DIR, FIGURES_DIR
+
+
+def _load_form_r2():
+    """Return (r2_dict, source) for the functional-form comparison in Fig 2c.
+    Prefers results/form_comparison.json (generated from the real motor-clutch
+    model by compute_form_comparison.py); falls back to representative values
+    if the cache is absent."""
+    cache = Path(__file__).resolve().parent / "form_comparison.json"
+    if cache.exists():
+        d = json.loads(cache.read_text())
+        return d["r2"], "model"
+    # fallback (flagged as illustrative): regenerate the cache for real numbers
+    return {"linear": 0.70, "power": 0.90, "log": 0.96, "saturating": 0.982}, "illustrative"
+
 
 # ----------------------------------------------------------------------------
 # GLOBAL STYLE  (adapted from the reference Nature-style script)
@@ -233,7 +246,11 @@ def figure2():
     # --- c: functional form comparison (lollipop, saturating highlighted) ---
     ax = fig.add_subplot(gs[0, 2]); style_axis(ax)
     forms = ['linear', 'power', 'log', 'saturating']
-    r2 = [0.70, 0.90, 0.96, 0.982]
+    # R2 values from the real motor-clutch comparison, cached by
+    # results/compute_form_comparison.py. Fall back to representative values
+    # (clearly flagged) if the cache has not been generated yet.
+    _r2_cached, _r2_source = _load_form_r2()
+    r2 = [_r2_cached[f] for f in forms]
     ypos = np.arange(len(forms))
     for y, (fm_name, v) in enumerate(zip(forms, r2)):
         hi = (fm_name == 'saturating')
@@ -245,6 +262,9 @@ def figure2():
     ax.set_yticks(ypos); ax.set_yticklabels(forms)
     ax.set_xlim(0.6, 1.03); ax.set_ylim(-0.6, 3.6)
     ax.set_xlabel(r'$R^2$ to motor', fontsize=13.5)
+    if _r2_source == "illustrative":
+        ax.text(0.62, -0.45, "illustrative — run compute_form_comparison.py",
+                fontsize=7, color='#94A3B8', style='italic')
     hp = sat['hepatocyte']
     ax.text(0.62, 3.2, r'$\sigma = V_{max}\,E/(K+E)$'
             + f"\nVmax={hp['Vmax']:.0f}, K={hp['K']:.1f}",
