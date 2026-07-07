@@ -26,7 +26,6 @@ Usage:
     python visualization/render_fluorescence.py --E 23 --t 120 --save one.png
 
 Dependencies: numpy, matplotlib, scipy.
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
