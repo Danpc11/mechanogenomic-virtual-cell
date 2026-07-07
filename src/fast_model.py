@@ -17,8 +17,6 @@ parameter sweeps, sensitivity analysis, and inference essentially free.
 The stochastic engine in mvirtual_cell.py remains the ground truth; this is a
 fast, interpretable approximation for when speed matters. Use `calibrate()` to
 (re)fit Vmax and K for any phenotype.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
