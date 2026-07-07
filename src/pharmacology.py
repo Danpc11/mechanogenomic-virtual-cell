@@ -33,8 +33,6 @@ IMPORTANT — HONEST LIMITS (read before using):
     (e.g. simtuzumab/anti-LOXL2) have failed in trials. Model predictions
     prioritize and explain; they do not replace experiments or trials.
 --------------------------------------------------------------------------------
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 Dependencies: numpy; uses mvirtual_cell (and optionally fast_model for speed).
 ================================================================================
 """
