@@ -19,8 +19,6 @@ Pipeline
         -> fit_phenotype()                   # assemble a calibrated Phenotype
         -> correlate_with_expression()       # validate vs RNA-seq (fibrosis)
 
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
-
 Dependencies: numpy, scipy, scikit-learn, pandas (pandas only for CSV I/O).
 ================================================================================
 """
