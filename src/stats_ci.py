@@ -15,8 +15,6 @@ Provides:
   * fold_change_ci      — CI on the stiffness fold-change (the primary result)
 
 No external dependencies beyond numpy/scipy.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
