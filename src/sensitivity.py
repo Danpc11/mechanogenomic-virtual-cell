@@ -22,8 +22,6 @@ mechanogenomic gene signature magnitude. Parameters: motor/clutch/coupling
 Interpretation for the paper: parameters with high sensitivity are the ones the
 data must constrain (and that inference should identify); low-sensitivity
 parameters are safe to fix. This is the robustness evidence.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
