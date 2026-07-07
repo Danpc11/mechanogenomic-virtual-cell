@@ -18,8 +18,6 @@ IMPORTANT (honest scope): the response-shape assignment below is the model's
 PREDICTION for each gene, to be tested against RNA-seq/qPCR — not a fit to the
 data. Treating it as a prediction (assign shape from the mechanotransduction
 role, THEN validate) is what gives it causal, not merely descriptive, force.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
