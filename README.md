@@ -237,6 +237,7 @@ mechanogenomic-virtual-cell/
 │   ├── mvirtual_cell.py           # core physical model + phenotype library
 │   ├── virtual_cell.py            # VirtualCell class (stateful interface)
 │   ├── gene_module.py             # mechanosensitive gene layer / hypotheses
+│   ├── hepatic_panel.py           # extended hepatic panel (rule-based shape prediction)
 │   ├── fast_model.py
 │   ├── calibration.py
 │   ├── recalibration.py
@@ -260,8 +261,16 @@ mechanogenomic-virtual-cell/
 │   ├── compute_form_comparison.py     # caches the functional-form R² comparison
 │   └── form_comparison.json
 │
-├── transcriptomics/                   # R pipeline: RNA-seq validation of the gene panel
-│   └── README.md                      # DESeq2 fits over 3 GEO cohorts (391 samples)
+├── transcriptomics/                   # RNA-seq validation of the gene panel
+│   ├── 0_update_gene_list.R
+│   ├── 1_Get_collapsse_data.R
+│   ├── 1_1_dds.R · 1_2_Stage_mean_genes.R · 1_3_Fit_filter.R
+│   ├── 2_validate_predictions.py      # model predictions vs observed (dir + shape)
+│   ├── data/                          # gene panel + sample metadata (391 samples)
+│   ├── results/
+│   │   ├── model_fits/conserved_genes.tsv
+│   │   └── validation_results.{tsv,json}   # 41/42 direction correct, p≈10⁻¹¹
+│   └── README.md                      # DESeq2 fits over 3 GEO cohorts
 │
 ├── demo/                          # interactive Colab notebook
 │   └── virtual_cell_demo.ipynb
@@ -847,6 +856,7 @@ runs from the curated gene list through per-gene model fits:
 | `1_1_dds.R` | Per-dataset DESeq2 normalization over F0–F4, sex effect removed |
 | `1_2_Stage_mean_genes.R` | Mean panel expression per fibrosis stage × dataset |
 | `1_3_Fit_filter.R` | Fit linear / power-law / sigmoid per gene (best by AIC), keep direction-concordant genes |
+| `2_validate_predictions.py` | Cross-check observed trajectories against the model's pre-registered predictions (direction + shape), with binomial tests vs chance |
 
 After filtering (fibrosis-graded NAFLD/NASH biopsies only; missing-sex samples
 dropped), **391 samples** across the three cohorts feed the DESeq2 fits:
@@ -862,10 +872,24 @@ Here F0 means NAFLD with steatosis but no fibrosis (not a healthy baseline);
 histologically normal controls are excluded. Full details, sample metadata
 columns, and run notes are in [`transcriptomics/README.md`](transcriptomics/README.md).
 
-This is the falsifiable test of the `gene_module.py` predictions: each gene's
-response-shape is assigned from its mechanotransduction role *before* fitting,
-and the pipeline keeps only genes whose measured fibrosis-stage trajectory is
-direction-concordant with the prediction.
+### Result
+
+This is the falsifiable test of the model's gene-level predictions. For each gene
+the model pre-registers an up/down **direction** (from its mechanotransduction
+role) and a linear/power/sigmoid **shape** (from a fixed category→shape rule in
+`src/hepatic_panel.py`), both independent of the observed data. On the extended
+hepatic panel (42 genes across the three cohorts):
+
+| Prediction | Correct | Rate | Chance | p-value |
+|---|---|---|---|---|
+| **Direction** (up/down) | 41/42 | 0.976 | 0.5 | 9.8 × 10⁻¹² |
+| **Shape** (linear/power/sigmoid) | 14/42 | 0.333 | 0.333 | 0.56 |
+
+The model predicts the **direction** of the stiffness response almost perfectly
+(41/42, p ≈ 10⁻¹¹). The exact **shape** is not resolved — with only five fibrosis
+stages, the fit rarely separates saturating power-law from sigmoid (27/42
+observed fits are power-law), so shape agreement sits at chance. Reported as-is
+rather than over-claimed.
 
 ---
 
