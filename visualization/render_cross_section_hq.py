@@ -24,8 +24,6 @@ Model -> illustration mapping (unchanged from the schematic version):
 Usage:
     python visualization/render_cross_section_hq.py --save cell_hq.svg   # pair
     python visualization/render_cross_section_hq.py --E 23 --save stiff_hq.svg
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
