@@ -24,8 +24,6 @@ Design principle (anti-circularity):
 
 This module feeds the same Gene objects used by gene_module, so the validation
 script and scoring work unchanged.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
