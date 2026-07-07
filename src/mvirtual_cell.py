@@ -15,8 +15,6 @@ switch (integrin -> cadherin). Parameters are CALIBRATED against projected
 nuclear area of primary rat hepatocytes on hydrogels (0.5-23 kPa, 2-36 h,
 ~40,000 nuclei) and cross-validated against qPCR.
 
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
-
 Dependencies: numpy, scipy. Optional: numba (≈50-100x speed-up).
 ================================================================================
 """
