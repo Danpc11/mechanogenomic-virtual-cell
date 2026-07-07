@@ -307,6 +307,29 @@ def test_phenotype_specific_genes():
           f"MDA invasion rises (MMP9={mda['MMP9']:.2f}); panels differ")
 
 
+def test_hepatic_panel_rule_based_shapes():
+    """The extended hepatic panel assigns shapes by a fixed category rule (not
+    per gene), and predicts directions from role."""
+    import hepatic_panel as hp
+    panel = hp.hepatic_panel()
+    dirs = hp.hepatic_directions()
+    cats = hp.hepatic_categories()
+    # every gene's shape must match its category's rule
+    for sym, g in panel.items():
+        expected = hp.CATEGORY_SHAPE[cats[sym]]
+        assert g.shape == expected, f"{sym}: shape {g.shape} != rule {expected}"
+    # spot-check the rule across categories
+    assert panel["YAP1"].shape == "sigmoid", "YAP1 effector -> sigmoid"
+    assert panel["LMNA"].shape == "linear", "LMNA envelope -> linear"
+    assert panel["PIEZO1"].shape == "weak_power", "PIEZO1 sensor -> weak_power"
+    # directions from role: identity falls, effectors rise
+    assert dirs["HNF4A"] == "down", "HNF4A identity falls"
+    assert dirs["YAP1"] == "up" and dirs["ACTA2"] == "up"
+    assert len(panel) > 40, "extended panel is larger than the core"
+    print(f"  [OK] hepatic panel: {len(panel)} genes, shapes follow category "
+          f"rule; YAP1/ACTA2 up, HNF4A down")
+
+
 # ---------------------------------------------------------------------------
 ALL_TESTS = [
     test_biphasic_traction,
@@ -326,6 +349,7 @@ ALL_TESTS = [
     test_sensitivity_identifies_key_params,
     test_bootstrap_fold_change_ci,
     test_phenotype_specific_genes,
+    test_hepatic_panel_rule_based_shapes,
 ]
 
 
