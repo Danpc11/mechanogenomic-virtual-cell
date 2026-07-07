@@ -4,13 +4,15 @@
 ##  F0 is only the normalization baseline, not a fit point.
 ## ==========================================================================
 
-setwd("~/Cell-nucleus-mechanical-and-transcriptomic-modeling/")
+# paths relative to this script
+.file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
+BASE  <- if (length(.file)) dirname(normalizePath(.file)) else getwd()
 library(dplyr)
 library(tidyr)
 library(vroom)
 
-DIR_IN   <- "./2_DGE/2_3_mean_per_stage"
-DIR_FITS <- "./2_DGE/2_4_model_fits"
+DIR_IN   <- file.path(BASE, "results", "stage_means")
+DIR_FITS <- file.path(BASE, "results", "model_fits")
 dir.create(DIR_FITS, recursive = TRUE, showWarnings = FALSE)
 
 ## ---------------------------------------------------------------------------

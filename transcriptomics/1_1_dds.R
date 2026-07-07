@@ -13,13 +13,15 @@
 ##    norm_counts_GSE135251.tsv
 ##    norm_counts_GSE162694.tsv
 ## ==========================================================================
-setwd("~/Cell-nucleus-mechanical-and-transcriptomic-modeling/")
+# paths relative to this script
+.file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
+BASE  <- if (length(.file)) dirname(normalizePath(.file)) else getwd()
 library(DESeq2)
 library(dplyr)
 library(limma)
 
-DIR_OBJ <- "./1_GEO_data/R_objects"
-DIR_OUT <- "./2_DGE/2_2_per_dataset_dds"
+DIR_OBJ <- file.path(BASE, "geo", "R_objects")
+DIR_OUT <- file.path(BASE, "results", "normalization")
 dir.create(DIR_OUT, recursive = TRUE, showWarnings = FALSE)
 
 ## ---------------------------------------------------------------------------

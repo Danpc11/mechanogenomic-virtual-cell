@@ -2,21 +2,24 @@
 ##  Script 2_3 — Mean normalized expression per stage × dataset
 ## ==========================================================================
 
-setwd("~/Cell-nucleus-mechanical-and-transcriptomic-modeling/")
+# paths relative to this script
+.file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
+BASE  <- if (length(.file)) dirname(normalizePath(.file)) else getwd()
 library(vroom)
 library(dplyr)
 library(tidyr)
 library(tibble)
 
-DIR_DDS <- "./2_DGE/2_2_per_dataset_dds"
-DIR_OUT <- "./2_DGE/2_3_mean_per_stage"
+DIR_DATA <- file.path(BASE, "data")
+DIR_DDS  <- file.path(BASE, "results", "normalization")
+DIR_OUT  <- file.path(BASE, "results", "stage_means")
 dir.create(DIR_OUT, recursive = TRUE, showWarnings = FALSE)
 
 ## ---------------------------------------------------------------------------
 ##  1. Gene panel — collapse duplicates by Ensembl_ID
 ## ---------------------------------------------------------------------------
 
-genes_interest <- vroom("./0_genes_nucleo_all_updated.tsv", show_col_types = FALSE)
+genes_interest <- vroom(file.path(DIR_DATA, "0_genes_nucleo_all_updated.tsv"), show_col_types = FALSE)
 genes_interest <- as.data.frame(genes_interest)   # forzar data.frame plano
 
 # Check for duplicates

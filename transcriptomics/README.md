@@ -15,6 +15,27 @@ the per-gene model fits used to validate the virtual-cell model.
 | `1_2_Stage_mean_genes.R` | Mean panel expression per fibrosis stage × dataset |
 | `1_3_Fit_filter.R` | Fit linear / power-law / sigmoid per gene (best by AIC), keep direction-concordant genes |
 
+Each script resolves its paths relative to its own location, so run them from
+anywhere (`Rscript transcriptomics/0_update_gene_list.R`) without editing paths.
+
+## Layout
+
+```
+transcriptomics/
+├── data/                 gene panel and sample metadata
+├── geo/
+│   ├── raw_downloads/     GEO downloads (not tracked)
+│   └── R_objects/         per-dataset metadata + count objects
+└── results/
+    ├── normalization/     per-dataset DESeq2 output (meta_filtered_*.tsv)
+    ├── stage_means/       mean_expr_per_stage.tsv
+    └── model_fits/        model_fits.tsv, conserved_genes.tsv
+```
+
+Small summary tables are tracked. Heavy, regenerable artifacts (raw downloads,
+count matrices, `dds_*.rds`, `norm_counts_*.tsv`, `.RData`) are git-ignored and
+rebuilt by rerunning the scripts.
+
 ## Sample selection
 
 Only fibrosis-graded NAFLD/NASH biopsies enter the fit. Histologically normal
@@ -35,8 +56,4 @@ and feed the DESeq2 fits:
 Columns: `sample_id`, `dataset`, `stage`, `sex`, `age`, `steatosis_grade`,
 `nas_score`, `true_control`, `disease`, `histology_group`.
 
-## Notes
-
-- Scripts still `setwd()` to the original project directory and use relative
-  `1_GEO_data/` and `2_DGE/` output paths; adjust those to run here.
-- Cohort background is documented in [`../data/RANseq_datasets_info.md`](../data/RANseq_datasets_info.md).
+Cohort background is documented in [`../data/RANseq_datasets_info.md`](../data/RANseq_datasets_info.md).

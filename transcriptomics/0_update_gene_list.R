@@ -2,7 +2,10 @@
 # Update gene list: add TEAD1, TEAD2, TEAD3, TEAD4, SRF + annotate Ensembl IDs
 # ==========================================================================
 
-setwd("~/Cell-nucleus-mechanical-and-transcriptomic-modeling/")
+# paths relative to this script
+.file    <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
+BASE     <- if (length(.file)) dirname(normalizePath(.file)) else getwd()
+DIR_DATA <- file.path(BASE, "data")
 
 library(vroom)
 library(dplyr)
@@ -14,7 +17,7 @@ library(org.Hs.eg.db)
 # 1. LOAD original table
 # --------------------------------------------------------------------------
 
-genes_nucleo_all <- vroom("genes_nucleo_all.tsv")
+genes_nucleo_all <- vroom(file.path(DIR_DATA, "genes_nucleo_all.tsv"))
 
 # --------------------------------------------------------------------------
 # 2. ADD TEAD/SRF rows
@@ -144,6 +147,6 @@ message("Genes únicos tras deduplicar: ", nrow(genes_nucleo_all_updated))
 
 vroom_write(
   genes_nucleo_all_updated,
-  "0_genes_nucleo_all_updated.tsv",
+  file.path(DIR_DATA, "0_genes_nucleo_all_updated.tsv"),
   delim = "\t"
 )

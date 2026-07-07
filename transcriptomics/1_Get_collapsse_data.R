@@ -14,10 +14,12 @@ library(stringr)
 library(AnnotationDbi)
 library(org.Hs.eg.db)
 library(dplyr)
-setwd("~/Cell-nucleus-mechanical-and-transcriptomic-modeling/")
+# paths relative to this script
+.file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
+BASE  <- if (length(.file)) dirname(normalizePath(.file)) else getwd()
 
-DIR_RAW <- "./1_GEO_data/raw_downloads"
-DIR_OBJ <- "./1_GEO_data/R_objects"
+DIR_RAW <- file.path(BASE, "geo", "raw_downloads")
+DIR_OBJ <- file.path(BASE, "geo", "R_objects")
 dir.create(DIR_RAW, recursive = TRUE, showWarnings = FALSE)
 dir.create(DIR_OBJ, recursive = TRUE, showWarnings = FALSE)
 options(timeout = 1800)
@@ -446,6 +448,6 @@ write.table(
   quote = FALSE,
   row.names = FALSE)
 
-save.image("/home/joelr/Cell-nucleus-mechanical-and-transcriptomic-modeling/1_GEO_data/R_objects/1_1_Data_Image.RData")
+save.image(file.path(DIR_OBJ, "1_1_Data_Image.RData"))
 
-#load("/home/joelr/Cell-nucleus-mechanical-and-transcriptomic-modeling/1_GEO_data/R_objects/1_1_Data_Image.RData")
+#load(file.path(DIR_OBJ, "1_1_Data_Image.RData"))
