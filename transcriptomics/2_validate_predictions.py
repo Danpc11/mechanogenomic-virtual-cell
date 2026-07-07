@@ -215,7 +215,8 @@ def validate(conserved_path, phenotype="hepatocyte", extended=False):
 def main():
     ap = argparse.ArgumentParser(description="Validate model predictions vs "
                                              "observed transcriptomics")
-    ap.add_argument("--conserved", required=True,
+    ap.add_argument("--conserved",
+                    default="transcriptomics/results/model_fits/conserved_genes.tsv",
                     help="conserved_genes.tsv from 1_3_Fit_filter.R")
     ap.add_argument("--phenotype", default="hepatocyte")
     ap.add_argument("--extended", action="store_true", help="use the extended hepatic panel")
