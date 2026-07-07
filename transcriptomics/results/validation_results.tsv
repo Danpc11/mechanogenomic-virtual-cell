@@ -1,0 +1,43 @@
+gene	obs_gene	tested	role	pred_dir	obs_dir	dir_match	pred_shape	obs_shape	shape_match	mean_r2
+YAP1	YAP1	True	yap tead effector	up	up	True	sigmoid	power_law	False	0.87
+WWTR1	WWTR1	True	yap tead effector	up	up	True	sigmoid	sigmoid	True	0.706
+TEAD2	TEAD2	True	yap tead effector	up	up	True	sigmoid	linear	False	0.844
+TEAD4	TEAD4	True	yap tead effector	up	up	True	sigmoid	power_law	False	0.898
+CCN2	CCN2	True	yap tead effector	up	up	True	sigmoid	power_law	False	0.976
+MKL1	MKL1	True	yap tead effector	up	up	True	sigmoid	linear	False	0.563
+SMAD2	SMAD2	True	yap tead effector	up	up	True	sigmoid	power_law	False	0.61
+ACTA2	ACTA2	True	fibrotic effector	up	up	True	sigmoid	power_law	False	0.826
+COL1A1	COL1A1	True	fibrotic effector	up	up	True	sigmoid	power_law	False	0.867
+COL1A2	COL1A2	True	fibrotic effector	up	up	True	sigmoid	power_law	False	0.978
+LOX	LOX	True	fibrotic effector	up	up	True	sigmoid	power_law	False	0.965
+PIEZO1	PIEZO1	True	mechanosensor	up	up	True	power_law	linear	False	0.587
+PTK2	PTK2	True	mechanosensor	up	down	False	power_law	linear	False	0.62
+ILK	ILK	True	adhesion	up	up	True	power_law	power_law	True	0.642
+VCL	VCL	True	adhesion	up	up	True	power_law	power_law	True	0.953
+SRC	SRC	True	adhesion	up	up	True	power_law	power_law	True	0.885
+FERMT2	FERMT2	True	adhesion	down	down	True	power_law	power_law	True	0.67
+MYH9	MYH9	True	cytoskeleton	up	up	True	power_law	power_law	True	0.612
+MYH10	MYH10	True	cytoskeleton	up	up	True	power_law	linear	False	0.913
+MYL9	MYL9	True	cytoskeleton	up	up	True	power_law	linear	False	0.869
+ACTB	ACTB	True	cytoskeleton	up	up	True	power_law	power_law	True	0.681
+CFL1	CFL1	True	cytoskeleton	up	up	True	power_law	sigmoid	False	0.962
+FLNA	FLNA	True	cytoskeleton	up	up	True	power_law	power_law	True	0.923
+LMNA	LMNA	True	nuclear envelope	up	up	True	linear	linear	True	0.652
+LMNB2	LMNB2	True	nuclear envelope	up	up	True	linear	power_law	False	0.62
+SYNE2	SYNE2	True	nuclear envelope	down	down	True	linear	linear	True	0.33
+SYNE3	SYNE3	True	nuclear envelope	down	down	True	linear	sigmoid	False	0.913
+NUP93	NUP93	True	nuclear envelope	up	up	True	linear	power_law	False	0.769
+TPR	TPR	True	nuclear envelope	up	up	True	linear	power_law	False	0.496
+TMPO	TMPO	True	nuclear envelope	up	up	True	linear	power_law	False	0.562
+HDAC1	HDAC1	True	epigenetic	up	up	True	linear	linear	True	0.723
+HDAC2	HDAC2	True	epigenetic	up	up	True	linear	linear	True	0.488
+HDAC3	HDAC3	True	epigenetic	down	down	True	linear	power_law	False	0.662
+DNMT3A	DNMT3A	True	epigenetic	up	up	True	linear	power_law	False	0.321
+EHMT1	EHMT1	True	epigenetic	down	down	True	linear	linear	True	0.758
+KDM4A	KDM4A	True	epigenetic	down	down	True	linear	power_law	False	0.647
+KDM4B	KDM4B	True	epigenetic	down	down	True	linear	power_law	False	0.695
+SUV39H1	SUV39H1	True	epigenetic	down	down	True	linear	power_law	False	0.464
+SUZ12	SUZ12	True	epigenetic	down	down	True	linear	linear	True	0.197
+CREBBP	CREBBP	True	epigenetic	down	down	True	linear	power_law	False	0.428
+KLF2	KLF2	True	graded tf	up	up	True	linear	power_law	False	0.74
+HNF4A	HNF4A	True	identity	down	down	True	linear	power_law	False	0.728

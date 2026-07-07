@@ -1,0 +1,19 @@
+{
+  "phenotype": "hepatocyte",
+  "n_panel_genes": 42,
+  "n_tested": 42,
+  "n_untested": 0,
+  "direction": {
+    "n_correct": 41,
+    "rate": 0.976,
+    "chance": 0.5,
+    "p_value": 9.777068044058979e-12
+  },
+  "shape": {
+    "n_correct": 14,
+    "rate": 0.333,
+    "chance": 0.333,
+    "p_value": 0.5577871835431378
+  },
+  "both_correct": 14
+}
