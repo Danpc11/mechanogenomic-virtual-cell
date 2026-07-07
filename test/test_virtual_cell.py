@@ -18,8 +18,6 @@ or under pytest:
 Each test prints its result and asserts the expected behavior. Because the
 motor-clutch engine is stochastic, tests use enough replicates for stable
 means and assert robust qualitative relations rather than exact values.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
