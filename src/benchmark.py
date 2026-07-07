@@ -22,8 +22,6 @@ Fairness measures:
 The point is NOT to show the full model always wins on raw R^2 (a flexible fit
 can do that) but that it (i) generalizes to held-out conditions and (ii)
 predicts the TEMPORAL structure the simple models structurally cannot.
-
-Author: Daniel Pérez-Calixto (INMEGEN / UNAM)
 ================================================================================
 """
 
