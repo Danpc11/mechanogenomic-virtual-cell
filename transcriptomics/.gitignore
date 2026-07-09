@@ -1,6 +1,6 @@
-# raw GEO downloads (large, re-downloadable)
+# raw GEO downloads
 geo/raw_downloads/
 
-# heavy regenerable objects that exceed GitHub's 100MB limit
+# large DESeq2 objects
 dds_*.rds
 *.RData
