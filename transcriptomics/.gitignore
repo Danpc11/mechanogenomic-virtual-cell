@@ -1,6 +1,6 @@
-# raw GEO downloads
+# raw data
 geo/raw_downloads/
 
-# large DESeq2 objects
+# large objects
 dds_*.rds
 *.RData
