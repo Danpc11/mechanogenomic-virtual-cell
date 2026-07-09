@@ -1,5 +1,5 @@
 ## ==========================================================================
-##  plots — per-gene trajectory plots, split up/down
+##  1_4_Plots_fitting — per-gene trajectory plots, split up/down
 ##  Genes ordered by systematic change across the three datasets.
 ##
 ##  Input : concordant 3/3 genes from 1_3
